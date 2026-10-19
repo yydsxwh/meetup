@@ -1,0 +1,14 @@
+[Unit]
+Description=约搭
+After=network.target
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/meetup/current
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/yyds/meetup.env
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+NoNewPrivileges=true
+[Install]
+WantedBy=multi-user.target
