@@ -36,7 +36,7 @@ export function InviteSharePanel({
   courseSlug,
   courseTitle,
   productType = "COURSE",
-  siteName = "YYDS",
+  siteName = "颗秒科技",
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<"site" | "course">(

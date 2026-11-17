@@ -12,15 +12,20 @@
 
 import crypto from "crypto";
 import fs from "fs";
+import { readCallbackAccounts, readCenterAccount, readCenterProfile } from "./pay-center-account";
+import type { AccountLoad } from "./payment-account-lock";
 import { getPublicSiteUrl } from "./payments";
 import { getSiteSettings } from "./site-settings";
 
-type WechatConfig = {
+export type WechatConfig = {
   appId: string;
   mchId: string;
   apiV3Key: string;
   serialNo: string;
   privateKey: string;
+  profileId: string;
+  profileVersion: number;
+  platformPublicKey: string;
 };
 
 export type WechatJsapiPayParams = {
@@ -45,27 +50,153 @@ function readEnvPrivateKey() {
   return "";
 }
 
-/** 组装商户下单所需配置；缺项直接抛中文错误给前台/日志 */
-export async function getWechatConfig(): Promise<WechatConfig> {
-  const settings = await getSiteSettings();
-  const appId = settings.wechatAppId || process.env.WECHAT_APP_ID || "";
-  const mchId = settings.wechatMchId || process.env.WECHAT_MCH_ID || "";
-  const apiV3Key = settings.wechatApiV3Key || process.env.WECHAT_API_V3_KEY || "";
-  const serialNo =
-    settings.wechatMchSerialNo || process.env.WECHAT_MCH_SERIAL_NO || "";
-  const privateKey =
-    (settings.wechatMchPrivateKey || "").replace(/\\n/g, "\n") ||
-    readEnvPrivateKey();
+function wechatConfigFromParts(input: {
+  appId: string;
+  mchId: string;
+  apiV3Key: string;
+  serialNo: string;
+  privateKey: string;
+  profileId?: string;
+  profileVersion?: number;
+  platformPublicKey?: string;
+}, incomplete: string): WechatConfig {
+  const privateKey = input.privateKey.replace(/\\n/g, "\n");
+  if (!input.appId || !input.mchId || !input.apiV3Key || !input.serialNo || !privateKey) {
+    throw new Error(incomplete);
+  }
+  if (input.apiV3Key.length !== 32) throw new Error("微信 APIv3 密钥应为 32 位");
+  return {
+    appId: input.appId,
+    mchId: input.mchId,
+    apiV3Key: input.apiV3Key,
+    serialNo: input.serialNo,
+    privateKey,
+    profileId: input.profileId || "",
+    profileVersion: input.profileVersion || 0,
+    platformPublicKey: (input.platformPublicKey || "").replace(/\\n/g, "\n"),
+  };
+}
 
-  if (!appId || !mchId || !apiV3Key || !serialNo || !privateKey) {
-    throw new Error(
-      "微信商户参数不完整，请在「系统设置」中填写，或配置环境变量",
-    );
+/** 主站系统设置里的原商户。已发出的旧订单继续用它，不改读支付中心当前账户。 */
+export async function legacyWechatConfig(): Promise<WechatConfig> {
+  const settings = await getSiteSettings();
+  return wechatConfigFromParts({
+    appId: settings.wechatAppId || process.env.WECHAT_APP_ID || "",
+    mchId: settings.wechatMchId || process.env.WECHAT_MCH_ID || "",
+    apiV3Key: settings.wechatApiV3Key || process.env.WECHAT_API_V3_KEY || "",
+    serialNo: settings.wechatMchSerialNo || process.env.WECHAT_MCH_SERIAL_NO || "",
+    privateKey: (settings.wechatMchPrivateKey || "").replace(/\\n/g, "\n") || readEnvPrivateKey(),
+  }, "微信商户参数不完整，请在「系统设置」中填写，或配置环境变量");
+}
+
+async function wechatCandidates(): Promise<WechatConfig[]> {
+  const configs: WechatConfig[] = [];
+  try {
+    configs.push(await legacyWechatConfig());
+  } catch {
+    // 旧密钥缺失时仍可尝试支付中心留下的历史版本。
   }
-  if (apiV3Key.length !== 32) {
-    throw new Error("微信 APIv3 密钥应为 32 位");
+  const remote = await readCallbackAccounts("WECHAT");
+  for (const item of remote) {
+    if (!item.apiV3Key || !item.mchId || !item.appId || !item.serialNo || !item.privateKeyPem) continue;
+    try {
+      configs.push(wechatConfigFromParts({
+        appId: item.appId,
+        mchId: item.mchId,
+        apiV3Key: item.apiV3Key,
+        serialNo: item.serialNo,
+        privateKey: item.privateKeyPem,
+        profileId: item.profileId,
+        profileVersion: 0,
+        platformPublicKey: item.platformPublicKeyPem,
+      }, "历史微信账户不完整"));
+    } catch {
+      // 缺字段的历史版本不能用来顶替别的商户。
+    }
   }
-  return { appId, mchId, apiV3Key, serialNo, privateKey };
+  const seen = new Set<string>();
+  return configs.filter((item) => {
+    const key = `${item.mchId}:${item.apiV3Key}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * 组装商户下单所需配置。
+ * 不传 lock：用该产品当前绑定。
+ * legacy：只用主站原设置。
+ * profileId / merchantId：只用下单时锁定的那一版，读不到就失败，不改用新商户。
+ */
+export async function getWechatConfig(product = "main", lock?: AccountLoad): Promise<WechatConfig> {
+  if (lock?.profileId) {
+    const remote = await readCenterProfile(lock.profileId);
+    if (remote.kind !== "READY" || remote.provider !== "WECHAT") {
+      throw new Error("原微信账户暂时不可用，没有改用其他商户");
+    }
+    const pub = remote.body.public || {};
+    const secrets = remote.body.secrets || {};
+    const cfg = wechatConfigFromParts({
+      appId: pub.appId || "",
+      mchId: pub.mchId || "",
+      apiV3Key: secrets.apiV3Key || "",
+      serialNo: pub.serialNo || "",
+      privateKey: secrets.privateKeyPem || "",
+      profileId: remote.profileId,
+      profileVersion: remote.version,
+      platformPublicKey: secrets.platformPublicKeyPem || "",
+    }, "原微信账户不完整，没有改用其他商户");
+    if (lock.merchantId && cfg.mchId !== lock.merchantId) {
+      throw new Error("原微信账户与下单商户不一致，没有改用其他商户");
+    }
+    return cfg;
+  }
+    if (lock?.merchantId) {
+    const found = (await wechatCandidates()).find((item) =>
+      item.mchId === lock.merchantId && (!lock.appId || item.appId === lock.appId));
+    if (!found) throw new Error("原微信商户暂时不可用，没有改用其他商户");
+    return found;
+  }
+  if (lock?.legacy) return legacyWechatConfig();
+
+  const remote = await readCenterAccount(product, "WECHAT");
+  if (remote.kind === "OFF") throw new Error("该产品已关闭新的支付");
+  if (remote.kind === "INVALID") throw new Error("指定支付账户无效，没有改用其他商户");
+  if (remote.kind === "UNAVAILABLE") throw new Error("支付配置暂时不可用");
+  if (remote.kind === "READY") {
+    const pub = remote.body.public || {};
+    const secrets = remote.body.secrets || {};
+    return wechatConfigFromParts({
+      appId: pub.appId || "",
+      mchId: pub.mchId || "",
+      apiV3Key: secrets.apiV3Key || "",
+      serialNo: pub.serialNo || "",
+      privateKey: secrets.privateKeyPem || "",
+      profileId: remote.profileId,
+      profileVersion: remote.version,
+      platformPublicKey: secrets.platformPublicKeyPem || "",
+    }, "支付中心的微信账户不完整，没有改用其他商户");
+  }
+  return legacyWechatConfig();
+}
+
+/** 只为读出订单号。能不能入账还要再对上这笔尝试的商户和应用。 */
+export async function identifyWechatNotification(rawBody: string, headers: Record<string, string>) {
+  return openWechatNotification({ rawBody, headers, configs: await wechatCandidates() });
+}
+
+/** 回调只能用这笔尝试锁定的账户。指定了 profile 时不会再拿别的历史密钥来试。 */
+export async function wechatConfigsForLock(product: string, lock: AccountLoad): Promise<WechatConfig[]> {
+  if (lock.profileId) return [await getWechatConfig(product, lock)];
+  if (lock.merchantId) {
+    const matched = (await wechatCandidates()).filter((item) =>
+      item.mchId === lock.merchantId && (!lock.appId || item.appId === lock.appId));
+    if (!matched.length) throw new Error("原微信商户暂时不可用，没有改用其他商户");
+    return matched;
+  }
+  if (lock.legacy) return [await legacyWechatConfig()];
+  throw new Error("没有原微信账户，没有改用其他商户");
 }
 
 /** 公众号网页授权（换 openid）所需的 AppID + AppSecret */
@@ -137,9 +268,9 @@ function authorizationHeader(
 async function wechatRequest<T>(
   method: "GET" | "POST",
   path: string,
-  bodyObj?: unknown,
+  bodyObj: unknown,
+  cfg: WechatConfig,
 ): Promise<T> {
-  const cfg = await getWechatConfig();
   const body = bodyObj ? JSON.stringify(bodyObj) : "";
   const auth = authorizationHeader(method, path, body, cfg);
   const res = await fetch(`https://api.mch.weixin.qq.com${path}`, {
@@ -186,8 +317,10 @@ export async function createNativePayment(input: {
   orderNo: string;
   description: string;
   amountCents: number;
+  product?: string;
+  lock?: AccountLoad;
 }) {
-  const cfg = await getWechatConfig();
+  const cfg = await getWechatConfig(input.product || "main", input.lock);
   const notifyUrl = await buildNotifyUrl();
   const data = await wechatRequest<{ code_url?: string }>(
     "POST",
@@ -203,11 +336,12 @@ export async function createNativePayment(input: {
         currency: "CNY",
       },
     },
+    cfg,
   );
   if (!data.code_url) {
     throw new Error("微信未返回付款码 code_url");
   }
-  return { codeUrl: data.code_url, notifyUrl };
+  return { codeUrl: data.code_url, notifyUrl, profileId: cfg.profileId, profileVersion: cfg.profileVersion, merchantId: cfg.mchId, appId: cfg.appId };
 }
 
 /** 微信内浏览器 JSAPI 支付（需用户 openid） */
@@ -216,8 +350,10 @@ export async function createJsapiPayment(input: {
   description: string;
   amountCents: number;
   openid: string;
+  product?: string;
+  lock?: AccountLoad;
 }) {
-  const cfg = await getWechatConfig();
+  const cfg = await getWechatConfig(input.product || "main", input.lock);
   const notifyUrl = await buildNotifyUrl();
   if (!input.openid) {
     throw new Error("缺少微信 openid，无法发起 JSAPI 支付");
@@ -239,6 +375,7 @@ export async function createJsapiPayment(input: {
         openid: input.openid,
       },
     },
+    cfg,
   );
   if (!data.prepay_id) {
     throw new Error("微信未返回 prepay_id");
@@ -247,6 +384,10 @@ export async function createJsapiPayment(input: {
     prepayId: data.prepay_id,
     payParams: buildJsapiPayParams(data.prepay_id, cfg),
     notifyUrl,
+    profileId: cfg.profileId,
+    profileVersion: cfg.profileVersion,
+    merchantId: cfg.mchId,
+    appId: cfg.appId,
   };
 }
 
@@ -279,9 +420,11 @@ export async function createH5Payment(input: {
   description: string;
   amountCents: number;
   clientIp: string;
+  product?: string;
   appName?: string;
+  lock?: AccountLoad;
 }) {
-  const cfg = await getWechatConfig();
+  const cfg = await getWechatConfig(input.product || "main", input.lock);
   const notifyUrl = await buildNotifyUrl();
   const siteUrl = await getPublicSiteUrl();
   const clientIp = (input.clientIp || "127.0.0.1").split(",")[0].trim();
@@ -302,16 +445,17 @@ export async function createH5Payment(input: {
         payer_client_ip: clientIp || "127.0.0.1",
         h5_info: {
           type: "Wap",
-          app_name: (input.appName || "歪歪艾斯课程").slice(0, 64),
+          app_name: (input.appName || "颗秒科技").slice(0, 64),
           app_url: siteUrl,
         },
       },
     },
+    cfg,
   );
   if (!data.h5_url) {
     throw new Error("微信未返回 H5 支付链接 h5_url");
   }
-  return { mwebUrl: data.h5_url, notifyUrl };
+  return { mwebUrl: data.h5_url, notifyUrl, profileId: cfg.profileId, profileVersion: cfg.profileVersion, merchantId: cfg.mchId, appId: cfg.appId };
 }
 
 /**
@@ -424,47 +568,107 @@ export async function fetchWechatUserInfo(input: {
   };
 }
 
-export async function queryNativePaymentByOrderNo(orderNo: string) {
-  const cfg = await getWechatConfig();
+export async function queryNativePaymentByOrderNo(orderNo: string, product = "main", lock?: AccountLoad) {
+  const cfg = await getWechatConfig(product, lock?.profileId || lock?.merchantId || lock?.legacy ? lock : { legacy: true });
   const path = `/v3/pay/transactions/out-trade-no/${encodeURIComponent(orderNo)}?mchid=${encodeURIComponent(cfg.mchId)}`;
   return wechatRequest<{
     trade_state?: string;
     transaction_id?: string;
     out_trade_no?: string;
-    amount?: { total?: number };
-  }>("GET", path);
+    amount?: { total?: number; currency?: string };
+    mchid?: string;
+  }>("GET", path, undefined, cfg);
 }
 
-/**
- * 解密支付结果通知里的 resource（AEAD_AES_256_GCM）。
- * apiV3Key 必须与商户平台设置的 32 位密钥一致。
- */
-export async function decryptWechatResource(resource: {
+type WechatPaidPayload = {
+  out_trade_no?: string;
+  transaction_id?: string;
+  trade_state?: string;
+  refund_status?: string;
+  mchid?: string;
+  appid?: string;
+  amount?: { total?: number; currency?: string; refund?: number };
+};
+
+function decryptWithKey(resource: {
   ciphertext: string;
   associated_data?: string;
   nonce: string;
-}) {
-  const cfg = await getWechatConfig();
-  const key = Buffer.from(cfg.apiV3Key, "utf8");
+}, apiV3Key: string): WechatPaidPayload {
+  const key = Buffer.from(apiV3Key, "utf8");
   const buf = Buffer.from(resource.ciphertext, "base64");
   const authTag = buf.subarray(buf.length - 16);
   const data = buf.subarray(0, buf.length - 16);
-  const decipher = crypto.createDecipheriv(
-    "aes-256-gcm",
-    key,
-    Buffer.from(resource.nonce, "utf8"),
-  );
-  if (resource.associated_data) {
-    decipher.setAAD(Buffer.from(resource.associated_data, "utf8"));
-  }
+  const decipher = crypto.createDecipheriv("aes-256-gcm", key, Buffer.from(resource.nonce, "utf8"));
+  if (resource.associated_data) decipher.setAAD(Buffer.from(resource.associated_data, "utf8"));
   decipher.setAuthTag(authTag);
   const decoded = Buffer.concat([decipher.update(data), decipher.final()]);
-  return JSON.parse(decoded.toString("utf8")) as {
-    out_trade_no?: string;
-    transaction_id?: string;
-    trade_state?: string;
-    amount?: { total?: number };
-  };
+  return JSON.parse(decoded.toString("utf8")) as WechatPaidPayload;
+}
+
+/** 只接受调用方已经按原交易账户筛过的配置。别的商户验过不算数。 */
+export function openWechatNotification(input: {
+  rawBody: string;
+  headers: Record<string, string>;
+  configs: WechatConfig[];
+}): WechatPaidPayload & { merchantId: string; profileId: string; appId: string; profileVersion: number } {
+  if (!input.configs.length) throw new Error("没有原微信账户，没有改用其他商户");
+  const body = JSON.parse(input.rawBody) as WechatNotifyBody;
+  if (!body.resource?.ciphertext || !body.resource.nonce) throw new Error("缺少加密资源");
+  let last: unknown;
+  for (const cfg of input.configs) {
+    try {
+      if (cfg.platformPublicKey) {
+        const verified = verifyWechatNotifySignature({
+          rawBody: input.rawBody,
+          headers: input.headers,
+          platformPublicKey: cfg.platformPublicKey,
+        });
+        if (!verified) {
+          last = new Error("签名未通过");
+          continue;
+        }
+      }
+      const payload = decryptWithKey(body.resource, cfg.apiV3Key);
+      if (payload.mchid && payload.mchid !== cfg.mchId) continue;
+      if (payload.appid && payload.appid !== cfg.appId) continue;
+      return {
+        ...payload,
+        merchantId: cfg.mchId,
+        profileId: cfg.profileId,
+        appId: cfg.appId,
+        profileVersion: cfg.profileVersion,
+      };
+    } catch (error) {
+      last = error;
+    }
+  }
+  throw last instanceof Error ? last : new Error("微信回调无法用原支付账户核对");
+}
+
+export function verifyWechatNotifySignature(input: {
+  rawBody: string;
+  headers: Record<string, string>;
+  platformPublicKey: string;
+}): boolean {
+  const timestamp = headerValue(input.headers, "wechatpay-timestamp");
+  const nonce = headerValue(input.headers, "wechatpay-nonce");
+  const signature = headerValue(input.headers, "wechatpay-signature");
+  if (!timestamp || !nonce || !signature || !input.platformPublicKey) return false;
+  const message = `${timestamp}\n${nonce}\n${input.rawBody}\n`;
+  try {
+    const verifier = crypto.createVerify("RSA-SHA256");
+    verifier.update(message);
+    verifier.end();
+    return verifier.verify(input.platformPublicKey, signature, "base64");
+  } catch {
+    return false;
+  }
+}
+
+function headerValue(headers: Record<string, string>, name: string) {
+  const found = Object.entries(headers).find(([key]) => key.toLowerCase() === name);
+  return found?.[1] || "";
 }
 
 export type WechatNotifyBody = {

@@ -134,10 +134,11 @@ const EXT_TO_MIME: Record<string, string> = {
 export const MAX_UPLOAD_BYTES = 2 * 1024 * 1024 * 1024; // 2GB
 export const MAX_UPLOAD_LABEL = "2GB";
 /**
- * 走本机代理上传的软上限。
- * 须低于 Next 默认约 10MB 的 body 克隆阈值，避免 FormData 被截断却只报「请求失败」。
+ * 走本机代理上传的实际上限。
+ * storeUpload 会把整包读进 Node 内存；未配置点播/OSS 时不能把提示写成 2GB。
  */
 export const MAX_PROXY_UPLOAD_BYTES = 8 * 1024 * 1024; // 8MB
+export const MAX_PROXY_UPLOAD_LABEL = "8MB";
 
 export const MEDIA_UPLOAD_ACCEPT = [
   "video/mp4",

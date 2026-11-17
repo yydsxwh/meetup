@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@andyyyds/shared/db";
+import { deleteCategory, listCategories, updateCategory } from "@andyyyds/courses/lib/studio-media";
+import { mediaErrorResponse } from "@andyyyds/courses/lib/studio-media-response";
 import { MEDIA_CATEGORY_NAME_MAX } from "@andyyyds/shared/media";
 import { canDeleteMedia } from "@andyyyds/shared/roles";
-import { requireCourseStudioUser, studioErrorResponse } from "@andyyyds/shared/studio";
+import { requireCourseStudioUser } from "@andyyyds/shared/studio";
 
 const patchSchema = z.object({
-  name: z.string().trim().min(1).max(MEDIA_CATEGORY_NAME_MAX),
+  name: z.string().trim().min(1).max(MEDIA_CATEGORY_NAME_MAX).optional(),
+  parentId: z.string().nullable().optional(),
+  direction: z.enum(["up", "down"]).optional(),
 });
 
 export async function PATCH(
@@ -16,39 +19,21 @@ export async function PATCH(
   try {
     const session = await requireCourseStudioUser();
     const { id } = await params;
-    const category = await prisma.mediaCategory.findFirst({
-      where: { id, ownerId: session.id },
-    });
-    if (!category) {
-      return NextResponse.json({ error: "分类不存在" }, { status: 404 });
-    }
-
     const body = patchSchema.parse(await req.json());
-    const conflict = await prisma.mediaCategory.findFirst({
-      where: {
-        ownerId: session.id,
-        name: body.name,
-        NOT: { id },
-      },
+    await updateCategory(session.id, id, body);
+    const listed = await listCategories(session.id);
+    const category = listed.categories.find((item) => item.id === id);
+    return NextResponse.json({
+      category: category ? { ...category, _count: { assets: category.directCount } } : null,
+      categories: listed.categories,
     });
-    if (conflict) {
-      return NextResponse.json({ error: "同名分类已存在" }, { status: 400 });
-    }
-
-    const updated = await prisma.mediaCategory.update({
-      where: { id },
-      data: { name: body.name },
-      include: { _count: { select: { assets: true } } },
-    });
-    return NextResponse.json({ category: updated });
   } catch (error) {
-    const mapped = studioErrorResponse(error);
-    return NextResponse.json({ error: mapped.error }, { status: mapped.status });
+    return mediaErrorResponse(error);
   }
 }
 
 export async function DELETE(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
@@ -60,24 +45,14 @@ export async function DELETE(
       );
     }
     const { id } = await params;
-    const category = await prisma.mediaCategory.findFirst({
-      where: { id, ownerId: session.id },
-    });
-    if (!category) {
-      return NextResponse.json({ error: "分类不存在" }, { status: 404 });
-    }
-
-    await prisma.$transaction([
-      prisma.mediaAsset.updateMany({
-        where: { categoryId: id, ownerId: session.id },
-        data: { categoryId: null },
-      }),
-      prisma.mediaCategory.delete({ where: { id } }),
-    ]);
-
-    return NextResponse.json({ ok: true });
+    const destination = new URL(req.url).searchParams.get("destination");
+    const result = await deleteCategory(
+      session.id,
+      id,
+      destination === null ? undefined : destination === "uncategorized" ? null : destination,
+    );
+    return NextResponse.json(result);
   } catch (error) {
-    const mapped = studioErrorResponse(error);
-    return NextResponse.json({ error: mapped.error }, { status: mapped.status });
+    return mediaErrorResponse(error);
   }
 }

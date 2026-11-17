@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { isForumMembershipProductType } from "@andyyyds/forum/lib/forum-membership-plans";
 import { getSession } from "@andyyyds/shared/auth";
 import { prisma } from "@andyyyds/shared/db";
 import {
@@ -7,7 +8,8 @@ import {
   validateOrderFormAnswers,
 } from "@andyyyds/shared/order-form";
 import { fulfillPaidOrder } from "@andyyyds/shared/orders";
-import { getPaymentChannels } from "@andyyyds/shared/payments";
+import { productKeyFromType } from "@andyyyds/shared/pay-center-account";
+import { notifyAccountLoad } from "@andyyyds/shared/payment-account-lock";
 import { getOrderFormConfig } from "@andyyyds/shared/site-settings";
 import { queryNativePaymentByOrderNo } from "@andyyyds/shared/wechat-pay";
 
@@ -36,22 +38,34 @@ export async function GET(
     return NextResponse.json({ error: "订单不存在" }, { status: 404 });
   }
 
-  const channels = await getPaymentChannels();
-  const wechatPending =
-    order.payChannel === "WECHAT" ||
-    order.payChannel.startsWith("WECHAT_");
-  if (order.status === "PENDING" && wechatPending && channels.wechat) {
+  const wechatAttempt = await prisma.orderPaymentAttempt.findUnique({
+    where: { orderId_provider: { orderId: order.id, provider: "WECHAT" } },
+  });
+  const wechatPending = Boolean(wechatAttempt) || order.payChannel.startsWith("WECHAT");
+  if (order.status === "PENDING" && wechatPending) {
     try {
-      const wx = await queryNativePaymentByOrderNo(order.orderNo);
-      if (wx.trade_state === "SUCCESS") {
-        order = await fulfillPaidOrder({
-          orderId: order.id,
-          payChannel: order.payChannel || "WECHAT",
-          providerTradeNo: wx.transaction_id || "",
-        });
+      const lock = notifyAccountLoad(wechatAttempt, order, "WECHAT");
+      if (lock) {
+        const wx = await queryNativePaymentByOrderNo(
+          order.orderNo,
+          productKeyFromType(order.course.productType),
+          lock,
+        );
+        const merchantOk = !wx.mchid || !wechatAttempt?.merchantId || wx.mchid === wechatAttempt.merchantId;
+        const amountMatches = typeof wx.amount?.total === "number" && wx.amount.total === order.amount;
+        const currencyOk = !wx.amount?.currency || wx.amount.currency === "CNY";
+        const forumVerified = !isForumMembershipProductType(order.course.productType) || (amountMatches && currencyOk);
+        if (wx.trade_state === "SUCCESS" && merchantOk && forumVerified && (wx.amount?.total == null || amountMatches)) {
+          order = await fulfillPaidOrder({
+            orderId: order.id,
+            payChannel: order.payChannel || "WECHAT",
+            providerTradeNo: wx.transaction_id || "",
+            currency: wx.amount?.currency,
+          });
+        }
       }
     } catch {
-      // ignore poll errors
+      // 查单失败保持未支付，下次轮询再试。不改用新商户。
     }
   }
 

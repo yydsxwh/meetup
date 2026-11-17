@@ -14,8 +14,13 @@ import {
   normalizeCouponCode,
   validateCouponForOrder,
 } from "@andyyyds/shared/coupons";
+import {
+  allocateSharedCoupon,
+  CouponUseError,
+} from "@andyyyds/shared/coupon-instance";
 import { prisma } from "@andyyyds/shared/db";
 import { fromMeetupPeopleDb, MEETUP_PRODUCT_TYPE } from "@andyyyds/meetup/lib/meetup";
+import { isForumMembershipProductType } from "@andyyyds/forum/lib/forum-membership-plans";
 import { isMathcodeProductType } from "@andyyyds/shared/product-types";
 import { sumMeetupPartySize } from "@andyyyds/meetup/lib/meetup-service-contact";
 import {
@@ -63,8 +68,23 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+    if (isForumMembershipProductType(course.productType)) {
+      return NextResponse.json(
+        { error: "请从论坛跨校会员页面购买，不能改价或使用课程优惠券" },
+        { status: 400 },
+      );
+    }
 
     const isShopProduct = course.productType === SHOP_PRODUCT_TYPE;
+    if (isShopProduct) {
+      return NextResponse.json(
+        {
+          error: "新的商城订单已统一到市集。请打开 /mall。已有订单和旧支付通知仍由本站处理。",
+          mallHref: "/mall",
+        },
+        { status: 409 },
+      );
+    }
     const isMeetupProduct = course.productType === MEETUP_PRODUCT_TYPE;
     // 约搭 quantity=占用名额；单账号上限 10，与详情步进器一致
     const quantity = isMeetupProduct
@@ -201,11 +221,21 @@ export async function POST(req: Request) {
         : null;
 
       // 券校验按「单价」门槛；减免按行小计再算
+      const sharedCampaign = coupon
+        ? await prisma.couponCampaign.findUnique({
+            where: { legacyCouponId: coupon.id },
+            select: { id: true, budgetHoldReason: true, deletedAt: true },
+          })
+        : null;
+      const usesInstancePool = Boolean(
+        sharedCampaign && !sharedCampaign.deletedAt && !sharedCampaign.budgetHoldReason,
+      );
       const availability = validateCouponForOrder(
         coupon,
         linePrice,
         new Date(),
         course.id,
+        { skipUseLimit: usesInstancePool },
       );
       if (availability || !coupon) {
         return NextResponse.json(
@@ -214,16 +244,18 @@ export async function POST(req: Request) {
         );
       }
 
-      const redeemed = await prisma.couponRedemption.findUnique({
-        where: {
-          couponId_userId: { couponId: coupon.id, userId: session.id },
-        },
-      });
-      if (redeemed) {
-        return NextResponse.json(
-          { error: "该优惠券已使用过" },
-          { status: 400 },
-        );
+      if (!usesInstancePool) {
+        const redeemed = await prisma.couponRedemption.findUnique({
+          where: {
+            couponId_userId: { couponId: coupon.id, userId: session.id },
+          },
+        });
+        if (redeemed) {
+          return NextResponse.json(
+            { error: "该优惠券已使用过" },
+            { status: 400 },
+          );
+        }
       }
 
       discount = calcCouponDiscount(linePrice, coupon);
@@ -244,48 +276,74 @@ export async function POST(req: Request) {
       referralCode = inviter?.referralCode || undefined;
     }
 
-    // 券额 ≥ 应付原价时 amount=0：直接 PAID 并开通，无需走微信/支付宝
-    const order = await prisma.order.create({
-      data: {
-        orderNo: makeOrderNo(),
-        userId: session.id,
-        courseId: course.id,
-        quantity,
-        specLabel,
-        amount,
-        discount,
-        couponId,
-        formAnswersJson,
-        referralCode,
-        status: amount === 0 ? "PAID" : "PENDING",
-        paidAt: amount === 0 ? new Date() : undefined,
-        // 0 元券单与免费单区分渠道，便于订单列表识别
-        payChannel: amount === 0 ? (couponId ? "COUPON" : "FREE") : undefined,
-      },
-    });
+    // 券额 ≥ 应付原价时 amount=0：直接 PAID 并开通，无需走微信/支付宝。
+    // 已升级的券在同一事务里占用一张实例，避免订单先写成已支付、额度却没扣。
+    let order;
+    try {
+      order = await prisma.$transaction(async (tx) => {
+        const created = await tx.order.create({
+          data: {
+            orderNo: makeOrderNo(),
+            userId: session.id,
+            courseId: course.id,
+            quantity,
+            specLabel,
+            amount,
+            discount,
+            couponId,
+            formAnswersJson,
+            referralCode,
+            status: amount === 0 ? "PAID" : "PENDING",
+            paidAt: amount === 0 ? new Date() : undefined,
+            payChannel: amount === 0 ? (couponId ? "COUPON" : "FREE") : undefined,
+          },
+        });
+        if (couponId) {
+          const allocated = await allocateSharedCoupon(tx, {
+            couponId,
+            userId: session.id,
+            orderId: created.id,
+            settle: amount === 0 ? "REDEEM" : "RESERVE",
+          });
+          if (amount === 0) {
+            await tx.coupon.update({
+              where: { id: couponId },
+              data: { usedCount: { increment: 1 } },
+            });
+            const redeemed = await tx.couponRedemption.findUnique({
+              where: {
+                couponId_userId: { couponId, userId: session.id },
+              },
+            });
+            if (!redeemed) {
+              await tx.couponRedemption.create({
+                data: { couponId, userId: session.id },
+              });
+            }
+          }
+        }
+        if (amount === 0) {
+          await grantProductAccess(tx, {
+            userId: session.id,
+            productId: course.id,
+          });
+          if (isShopProduct) {
+            await tx.course.update({
+              where: { id: course.id },
+              data: { studentCount: { increment: quantity } },
+            });
+          }
+        }
+        return created;
+      });
+    } catch (error) {
+      if (error instanceof CouponUseError) {
+        return NextResponse.json({ error: error.message }, { status: error.status });
+      }
+      throw error;
+    }
 
     if (amount === 0) {
-      await prisma.$transaction(async (tx) => {
-        if (couponId) {
-          await tx.coupon.update({
-            where: { id: couponId },
-            data: { usedCount: { increment: 1 } },
-          });
-          await tx.couponRedemption.create({
-            data: { couponId, userId: session.id },
-          });
-        }
-        await grantProductAccess(tx, {
-          userId: session.id,
-          productId: course.id,
-        });
-        if (isShopProduct) {
-          await tx.course.update({
-            where: { id: course.id },
-            data: { studentCount: { increment: quantity } },
-          });
-        }
-      });
       return NextResponse.json({
         enrolled: true,
         zeroPay: true,

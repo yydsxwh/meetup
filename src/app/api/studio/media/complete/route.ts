@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@andyyyds/shared/db";
+import {
+  assertUploadTargets,
+  createMediaAsset,
+  findUploadSession,
+} from "@andyyyds/courses/lib/studio-media";
+import { mediaErrorResponse } from "@andyyyds/courses/lib/studio-media-response";
 import {
   ASSET_DESC_MAX,
   ASSET_NAME_MAX,
@@ -11,7 +16,7 @@ import {
   isMediaKind,
 } from "@andyyyds/shared/media";
 import { completeOssBrowserMultipart } from "@andyyyds/shared/storage";
-import { requireCourseStudioUser, studioErrorResponse } from "@andyyyds/shared/studio";
+import { requireCourseStudioUser } from "@andyyyds/shared/studio";
 import {
   completeVodBrowserMultipart,
   vodUrlFromVideoId,
@@ -29,6 +34,11 @@ const completeSchema = z.object({
   description: z.string().trim().max(ASSET_DESC_MAX).optional(),
   categoryId: z.string().optional(),
   durationSec: z.coerce.number().int().min(0).optional(),
+  uploadSessionId: z.string().trim().min(8).max(80).optional(),
+  purposeIds: z.array(z.string()).optional(),
+  schoolIds: z.array(z.string()).optional(),
+  termIds: z.array(z.string()).optional(),
+  tagIds: z.array(z.string()).optional(),
   fileName: z.string().trim().min(1).max(240),
   mimeType: z.string().trim().max(120).optional(),
   sizeBytes: z.coerce.number().int().min(0).max(MAX_UPLOAD_BYTES),
@@ -67,15 +77,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "不支持的文件类型" }, { status: 400 });
     }
 
-    if (body.categoryId) {
-      const category = await prisma.mediaCategory.findFirst({
-        where: { id: body.categoryId, ownerId: session.id },
-        select: { id: true },
-      });
-      if (!category) {
-        return NextResponse.json({ error: "分类不存在" }, { status: 400 });
-      }
-    }
+    const existing = await findUploadSession(session.id, body.uploadSessionId);
+    if (existing) return NextResponse.json({ asset: existing });
+
+    const categoryId = body.categoryId?.trim() || null;
+    await assertUploadTargets(session.id, {
+      categoryId,
+      purposeIds: body.purposeIds,
+      schoolIds: body.schoolIds,
+      termIds: body.termIds,
+      tagIds: body.tagIds,
+    });
 
     let mediaKind = body.mediaKind && isMediaKind(body.mediaKind)
       ? body.mediaKind
@@ -122,27 +134,28 @@ export async function POST(req: Request) {
       fileUrl = body.fileUrl;
     }
 
-    const asset = await prisma.mediaAsset.create({
-      data: {
-        name: body.name,
-        description: body.description || "",
-        type: mediaKind,
-        fileUrl,
-        fileName: body.fileName,
-        mimeType,
-        sizeBytes: body.sizeBytes,
-        durationSec: body.durationSec || 0,
-        storageProvider,
-        vodVideoId,
-        ownerId: session.id,
-        categoryId: body.categoryId || null,
-      },
-      include: { category: true },
+    const asset = await createMediaAsset({
+      ownerId: session.id,
+      name: body.name,
+      description: body.description || "",
+      type: mediaKind,
+      fileUrl,
+      fileName: body.fileName,
+      mimeType,
+      sizeBytes: body.sizeBytes,
+      durationSec: body.durationSec || 0,
+      storageProvider,
+      vodVideoId,
+      categoryId,
+      uploadSessionId: body.uploadSessionId || null,
+      purposeIds: body.purposeIds,
+      schoolIds: body.schoolIds,
+      termIds: body.termIds,
+      tagIds: body.tagIds,
     });
 
     return NextResponse.json({ asset });
   } catch (error) {
-    const mapped = studioErrorResponse(error);
-    return NextResponse.json({ error: mapped.error }, { status: mapped.status });
+    return mediaErrorResponse(error);
   }
 }

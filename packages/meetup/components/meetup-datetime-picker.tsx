@@ -354,9 +354,9 @@ export function MeetupDatetimePicker({
                         <button
                           key={cell.key}
                           type="button"
-                          className={`min-h-11 touch-manipulation rounded-xl text-sm ${
+                          className={`min-h-11 touch-manipulation rounded-xl text-sm text-[var(--ink)] ${
                             selected
-                              ? "bg-[var(--ink)] text-white"
+                              ? "bg-[var(--brand-soft)] font-semibold ring-2 ring-[var(--brand)]"
                               : "hover:bg-[var(--brand-soft)]"
                           }`}
                           onClick={() =>

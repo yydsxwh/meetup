@@ -22,6 +22,7 @@ import {
   ossStorageConfigured,
 } from "@andyyyds/shared/storage";
 import { prisma } from "@andyyyds/shared/db";
+import { storageCategorySegment } from "@andyyyds/shared/media-library";
 import { requireCourseStudioUser, studioErrorResponse } from "@andyyyds/shared/studio";
 
 export const runtime = "nodejs";
@@ -54,21 +55,22 @@ export async function POST(req: Request) {
       );
     }
 
-    let categoryFolder = "uncategorized";
     if (body.categoryId) {
       const category = await prisma.mediaCategory.findFirst({
         where: { id: body.categoryId, ownerId: session.id },
-        select: { id: true, name: true },
+        select: { id: true },
       });
       if (!category) {
-        return NextResponse.json({ error: "分类不存在" }, { status: 400 });
+        return NextResponse.json(
+          { error: "分类已删除，请改选分类后重试", code: "CATEGORY_GONE" },
+          { status: 409 },
+        );
       }
-      categoryFolder = category.name || "uncategorized";
     }
 
     const mediaKind = classifyMediaKind(mimeType, body.fileName);
     const settings = await getSiteSettings();
-    const storageSubPath = `${mediaKind.toLowerCase()}/${categoryFolder}`;
+    const storageSubPath = `${mediaKind.toLowerCase()}/${storageCategorySegment(body.categoryId)}`;
 
     if (
       mediaKind === "VIDEO" &&

@@ -265,7 +265,7 @@ export function ImageUrlField({
           }}
         >
           <div
-            className="w-full max-w-md space-y-3 rounded-[24px] border border-[var(--line)] bg-[var(--bg)] p-5 shadow-xl"
+            className="max-h-[calc(100dvh-1.5rem)] w-full max-w-md space-y-3 overflow-y-auto rounded-[24px] border border-[var(--line)] bg-[var(--bg)] p-5 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-base font-semibold">入库素材中心</h3>
@@ -503,7 +503,7 @@ export function ImageGalleryField({
           }}
         >
           <div
-            className="w-full max-w-md space-y-3 rounded-[24px] border border-[var(--line)] bg-[var(--bg)] p-5 shadow-xl"
+            className="max-h-[calc(100dvh-1.5rem)] w-full max-w-md space-y-3 overflow-y-auto rounded-[24px] border border-[var(--line)] bg-[var(--bg)] p-5 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-base font-semibold">入库素材中心</h3>

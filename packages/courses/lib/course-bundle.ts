@@ -91,8 +91,6 @@ export async function grantProductAccess(
   db: DbClient,
   input: { userId: string; productId: string },
 ) {
-  await ensureEnrollment(db, input.userId, input.productId);
-
   const product = await db.course.findUnique({
     where: { id: input.productId },
     select: {
@@ -105,6 +103,10 @@ export async function grantProductAccess(
     },
   });
   if (!product) return;
+  // 论坛跨校会员不是课程报名，不能写成在学记录。
+  if (product.productType === "FORUM") return;
+
+  await ensureEnrollment(db, input.userId, input.productId);
 
   if (product.productType === "MEETUP") {
     await joinMeetupAfterPurchase(db, {

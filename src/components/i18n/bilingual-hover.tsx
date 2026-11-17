@@ -39,7 +39,7 @@ export function BilingualHover({
       onBlur={showTip ? () => setOpen(false) : undefined}
       aria-describedby={showTip && open ? tipId : undefined}
     >
-      <span className="block truncate leading-[inherit]">{children ?? primary}</span>
+      <span className="block break-words leading-[inherit]">{children ?? primary}</span>
       {showTip && open ? (
         <span
           id={tipId}

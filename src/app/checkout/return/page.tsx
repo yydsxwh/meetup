@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { isForumMembershipProductType } from "@andyyyds/forum/lib/forum-membership-plans";
 import { getSession } from "@andyyyds/shared/auth";
 import { prisma } from "@andyyyds/shared/db";
 
@@ -28,14 +29,20 @@ export default async function CheckoutReturnPage({
         if (order.course.productType === "MATHCODE") {
           redirect("/products/mathcode?paid=1");
         }
+        if (isForumMembershipProductType(order.course.productType)) {
+          redirect(`/forum/membership?order=${order.id}`);
+        }
         redirect(`/learn/${order.course.slug}`);
       }
+      const forumOrder = isForumMembershipProductType(order.course.productType);
       return (
         <div className="container py-16">
           <div className="surface mx-auto max-w-lg rounded-[28px] p-8 text-center">
             <h1 className="text-2xl font-semibold">支付结果确认中</h1>
             <p className="mt-3 text-sm text-[var(--muted)]">
-              若已付款，课程将在数秒内开通。也可稍后在「我的学习」查看。
+              {forumOrder
+                ? "打开这个页面不会开通跨校会员。若已付款，请等服务器确认收款后再查看会员页。"
+                : "若已付款，课程将在数秒内开通。也可稍后在「我的学习」查看。"}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link href={`/checkout/${order.id}`} className="btn btn-primary">

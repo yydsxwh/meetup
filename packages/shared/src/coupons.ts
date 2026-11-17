@@ -100,12 +100,14 @@ export function validateCouponForOrder(
   priceCents: number,
   now: Date = new Date(),
   courseId?: string,
+  options?: { skipUseLimit?: boolean },
 ): string | null {
   if (!coupon) return "优惠券不存在";
   if (!coupon.isActive) return "优惠券已停用";
   if (coupon.startsAt && coupon.startsAt > now) return "优惠券尚未开始";
   if (coupon.expiresAt && coupon.expiresAt < now) return "优惠券已过期";
-  if (coupon.usedCount >= coupon.maxUses) return "优惠券已领完";
+  // 已升级的活动用实例池计额度，不再用可能过期的 usedCount 单独放行或拦截。
+  if (!options?.skipUseLimit && coupon.usedCount >= coupon.maxUses) return "优惠券已领完";
   if (priceCents < coupon.minAmount) {
     return coupon.minAmount > 0
       ? `未满最低消费 ¥${(coupon.minAmount / 100).toFixed(coupon.minAmount % 100 === 0 ? 0 : 2)}`

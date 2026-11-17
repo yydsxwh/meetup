@@ -3,8 +3,10 @@ import { CheckoutOrderForm } from "@/components/checkout-order-form";
 import { getSession } from "@andyyyds/shared/auth";
 import { prisma } from "@andyyyds/shared/db";
 import { parseStoredAnswers } from "@andyyyds/shared/order-form";
+import { productKeyFromType } from "@andyyyds/shared/pay-center-account";
 import { getPaymentChannels } from "@andyyyds/shared/payments";
 import { getOrderFormConfig } from "@andyyyds/shared/site-settings";
+import { isForumMembershipProductType } from "@andyyyds/forum/lib/forum-membership-plans";
 import { productDetailPath } from "@andyyyds/shared/product-types";
 import { formatPrice } from "@andyyyds/shared/utils";
 
@@ -39,11 +41,14 @@ export default async function CheckoutPage({
     if (order.course.productType === "MATHCODE") {
       redirect("/products/mathcode");
     }
+    if (isForumMembershipProductType(order.course.productType)) {
+      redirect(`/forum/membership?order=${order.id}`);
+    }
     redirect(`/learn/${order.course.slug}`);
   }
 
   const [channels, orderForm] = await Promise.all([
-    getPaymentChannels(),
+    getPaymentChannels(productKeyFromType(order.course.productType)),
     getOrderFormConfig(),
   ]);
   const initialAnswers = parseStoredAnswers(order.formAnswersJson).values;
@@ -90,6 +95,15 @@ export default async function CheckoutPage({
             <span>应付</span>
             <span className="text-[var(--brand)]">{formatPrice(order.amount)}</span>
           </div>
+          {isForumMembershipProductType(order.course.productType) ? (
+            <div className="space-y-2 text-sm leading-6 text-[var(--muted)]">
+              {order.course.originalPrice > order.amount ? (
+                <p>原价 {formatPrice(order.course.originalPrice)}，本次实收已按全年八折。</p>
+              ) : null}
+              <p>{order.specLabel || "按北京时间的自然月计算。"}不自动续费。支付成功页不会直接开通，权益等服务器确认收款。</p>
+              <p>开通后可以在其他大学发帖和评论，不代表已通过该校认证。</p>
+            </div>
+          ) : null}
         </div>
         <div className="mt-8">
           <CheckoutOrderForm
@@ -98,6 +112,7 @@ export default async function CheckoutPage({
             channels={channels}
             orderForm={orderForm}
             initialAnswers={initialAnswers}
+            skipForm={isForumMembershipProductType(order.course.productType)}
           />
         </div>
       </div>

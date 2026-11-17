@@ -1,21 +1,22 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@andyyyds/shared/db";
+import { deleteMediaAssets, updateMediaAsset } from "@andyyyds/courses/lib/studio-media";
+import { mediaErrorResponse } from "@andyyyds/courses/lib/studio-media-response";
 import { ASSET_DESC_MAX, ASSET_NAME_MAX } from "@andyyyds/shared/media";
-import { deleteStoredFile } from "@andyyyds/shared/storage";
 import { canDeleteMedia } from "@andyyyds/shared/roles";
-import { requireCourseStudioUser, studioErrorResponse } from "@andyyyds/shared/studio";
+import { deleteStoredFile } from "@andyyyds/shared/storage";
+import { requireCourseStudioUser } from "@andyyyds/shared/studio";
 
 const patchSchema = z.object({
   name: z.string().trim().min(1).max(ASSET_NAME_MAX).optional(),
   description: z.string().trim().max(ASSET_DESC_MAX).optional(),
   categoryId: z.string().nullable().optional(),
   durationSec: z.number().int().min(0).optional(),
+  purposeIds: z.array(z.string()).optional(),
+  schoolIds: z.array(z.string()).optional(),
+  termIds: z.array(z.string()).optional(),
+  tagIds: z.array(z.string()).optional(),
 });
-
-async function getOwnedAsset(id: string, ownerId: string) {
-  return prisma.mediaAsset.findFirst({ where: { id, ownerId } });
-}
 
 export async function PATCH(
   req: Request,
@@ -24,36 +25,14 @@ export async function PATCH(
   try {
     const session = await requireCourseStudioUser();
     const { id } = await params;
-    const asset = await getOwnedAsset(id, session.id);
-    if (!asset) {
-      return NextResponse.json({ error: "素材不存在" }, { status: 404 });
-    }
-
     const body = patchSchema.parse(await req.json());
-    if (body.categoryId) {
-      const category = await prisma.mediaCategory.findFirst({
-        where: { id: body.categoryId, ownerId: session.id },
-      });
-      if (!category) {
-        return NextResponse.json({ error: "分类不存在" }, { status: 400 });
-      }
-    }
-
-    const updated = await prisma.mediaAsset.update({
-      where: { id },
-      data: {
-        ...(body.name !== undefined ? { name: body.name } : {}),
-        ...(body.description !== undefined ? { description: body.description } : {}),
-        ...(body.categoryId !== undefined ? { categoryId: body.categoryId } : {}),
-        ...(body.durationSec !== undefined ? { durationSec: body.durationSec } : {}),
-      },
-      include: { category: true },
+    const asset = await updateMediaAsset(session.id, id, {
+      ...body,
+      categoryId: body.categoryId === undefined ? undefined : body.categoryId || null,
     });
-
-    return NextResponse.json({ asset: updated });
+    return NextResponse.json({ asset });
   } catch (error) {
-    const mapped = studioErrorResponse(error);
-    return NextResponse.json({ error: mapped.error }, { status: mapped.status });
+    return mediaErrorResponse(error);
   }
 }
 
@@ -70,20 +49,21 @@ export async function DELETE(
       );
     }
     const { id } = await params;
-    const asset = await getOwnedAsset(id, session.id);
-    if (!asset) {
-      return NextResponse.json({ error: "素材不存在" }, { status: 404 });
+    const result = await deleteMediaAssets(session.id, [id]);
+    if (result.blocked.length > 0 && result.deletedIds.length === 0) {
+      return NextResponse.json(
+        { error: result.blocked[0]?.reason || "素材已被课程使用，不能删除", blocked: result.blocked },
+        { status: 409 },
+      );
     }
-
-    await prisma.mediaAsset.delete({ where: { id } });
-    await deleteStoredFile(asset.fileUrl, session.id, {
-      vodVideoId: asset.vodVideoId,
-      storageProvider: asset.storageProvider,
-    });
-
+    for (const asset of result.deletedFiles) {
+      await deleteStoredFile(asset.fileUrl, session.id, {
+        vodVideoId: asset.vodVideoId,
+        storageProvider: asset.storageProvider,
+      });
+    }
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const mapped = studioErrorResponse(error);
-    return NextResponse.json({ error: mapped.error }, { status: mapped.status });
+    return mediaErrorResponse(error);
   }
 }

@@ -18,9 +18,13 @@ type Props = {
     wechat: boolean;
     alipay: boolean;
     mockOnly: boolean;
+    closed?: boolean;
+    unavailable?: boolean;
+    invalid?: boolean;
   };
   orderForm: OrderFormConfig;
   initialAnswers: OrderFormAnswers;
+  skipForm?: boolean;
 };
 
 export function CheckoutOrderForm({
@@ -29,8 +33,9 @@ export function CheckoutOrderForm({
   channels,
   orderForm,
   initialAnswers,
+  skipForm = false,
 }: Props) {
-  const fields = activeOrderFormFields(orderForm);
+  const fields = skipForm ? [] : activeOrderFormFields(orderForm);
   const [values, setValues] = useState<OrderFormAnswers>(initialAnswers);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -45,7 +50,7 @@ export function CheckoutOrderForm({
   );
 
   async function ensureSaved(): Promise<boolean> {
-    if (fields.length === 0) return true;
+    if (skipForm || fields.length === 0) return true;
     const check = validateOrderFormAnswers(orderForm, values);
     if (!check.ok) {
       setError(check.error);

@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-17",
+  "repository": "yydsxwh/meetup",
+  "original_pr": 1,
+  "original_head": "2ae35743f37944c0315cc0f3920d4a7756685e20",
+  "source": {
+    "repository": "yydsxwh/Andyyyds",
+    "commit": "f505187112ff82341e4cf5233da071439cbedec3",
+    "auth_overlay": {
+      "repository": "yydsxwh/Andyyyds",
+      "commit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930",
+      "files": [
+        "packages/shared/src/account-oidc-cookie.ts",
+        "packages/shared/src/account-oidc-tx-jar.test.ts",
+        "packages/shared/src/account-oidc-cookie-compat.test.ts",
+        "packages/shared/src/www-tab-broker.ts",
+        "src/app/api/auth/account/start/route.ts",
+        "src/app/api/auth/callback/route.ts",
+        "src/app/api/auth/tab/route.ts"
+      ],
+      "note": "Only existing host routes and required shared modules/tests are synchronized; the main-site account-switch page is not introduced."
+    },
+    "byte_verified_files": 225
+  },
+  "code_status": "reviewed independent-host candidate ready to merge",
+  "deployment_status": "not deployed; production gates remain in SPLIT-READINESS.md",
+  "validation": [
+    {
+      "check": "TypeScript",
+      "command": "npm run typecheck",
+      "result": "passed"
+    },
+    {
+      "check": "source provenance and host boundaries",
+      "command": "npm run test:host",
+      "passed": 3
+    },
+    {
+      "check": "tab header and identity isolation",
+      "command": "node --import tsx --test test/tab-bootstrap.test.ts",
+      "passed": 5
+    },
+    {
+      "check": "shared auth and payment boundaries",
+      "command": "npm run test:shared",
+      "test_files_passed": 6
+    },
+    {
+      "check": "production build",
+      "command": "npm run build",
+      "result": "passed on final candidate"
+    },
+    {
+      "check": "isolated HTTP and product behavior",
+      "command": "npm run test:http",
+      "passed": 11,
+      "credentials": "synthetic local JWT only",
+      "database": "new temporary SQLite database for each run"
+    }
+  ],
+  "not_verified": [
+    "real Account OIDC client registration or live credentials",
+    "production data/attachments migration and rollback",
+    "real external conversion or payment provider transactions",
+    "production deployment and traffic cutover"
+  ],
+  "safety": {
+    "production_writes": false,
+    "deployments": false,
+    "branch_protection_changed": false,
+    "github_actions_enabled": false
+  }
+}

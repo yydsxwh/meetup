@@ -34,6 +34,9 @@ type Props = {
     wechat: boolean;
     alipay: boolean;
     mockOnly: boolean;
+    closed?: boolean;
+    unavailable?: boolean;
+    invalid?: boolean;
   };
   /** 发起支付前钩子（如下单信息采集未完成则返回 false） */
   beforePay?: () => Promise<boolean>;
@@ -364,6 +367,15 @@ export function CheckoutPay({ orderId, amount, channels, beforePay }: Props) {
     return () => stopPolling();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
+
+  if (!channels.wechat && !channels.alipay && !channels.mockOnly) {
+    const text = channels.invalid
+      ? "指定支付账户无效，没有改用其他商户。"
+      : channels.unavailable
+        ? "支付暂时不可用，请稍后再试。"
+        : "这个产品暂停收款。已买到的内容不受影响，稍后可以再试。";
+    return <p className="text-sm text-[var(--muted)]">{text}</p>;
+  }
 
   if (channels.mockOnly) {
     return (

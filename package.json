@@ -2,7 +2,7 @@
   "name": "meetup",
   "version": "0.1.0",
   "private": true,
-  "description": "约搭 independent host from 3686fed59ecbc650157d096733db98954f418a06",
+  "description": "约搭 independent host from f505187112ff82341e4cf5233da071439cbedec3; auth compatibility from 59eccc3a73f05f152b0e45af27c9c4a9b0b9d930",
   "workspaces": [
     "packages/*"
   ],
@@ -11,9 +11,11 @@
     "build": "prisma generate && next build --webpack",
     "start": "next start --hostname 127.0.0.1 --port 4215",
     "typecheck": "tsc --noEmit",
-    "test": "node --test test/host.test.mjs",
+    "test": "node --test test/host.test.mjs && node --import tsx --test test/tab-bootstrap.test.ts && npm run test:shared",
     "postinstall": "prisma generate",
-    "test:host": "node --test test/host.test.mjs"
+    "test:host": "node --test test/host.test.mjs",
+    "test:shared": "node --import tsx --test packages/shared/src/tab-decision.test.ts packages/shared/src/auth-handoff.test.ts packages/shared/src/pay-center-account.test.ts packages/shared/src/payment-account-lock.test.ts packages/shared/src/account-oidc-tx-jar.test.ts packages/shared/src/account-oidc-cookie-compat.test.ts",
+    "test:http": "node test/host-smoke.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
