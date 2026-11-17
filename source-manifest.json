@@ -1,0 +1,1147 @@
+{
+  "repository": "yydsxwh/Andyyyds",
+  "commit": "f505187112ff82341e4cf5233da071439cbedec3",
+  "product": "meetup",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb",
+      "sourceCommit": "3686fed59ecbc650157d096733db98954f418a06"
+    },
+    {
+      "path": "packages/courses/components/courses-subnav.tsx",
+      "sha256": "7962ce04160d9a75a3384fe54f25f0a7b9c71abefdc05904d2aac155d65662f6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/courses/lib/course-bundle.ts",
+      "sha256": "d31ec1856358bb2122122489f43ad3a59233a6e30521b39f90c4db2351e0340c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/courses/lib/knowledge-grant.ts",
+      "sha256": "74a79f234d0492fd9af70747a2c22a9952543b64064855b0c71f3feb0fa1e92d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/courses/lib/studio-media-response.ts",
+      "sha256": "2f75f8ee37ec4d158cdd7edabbd9ed054fb873988e1243f3dedf1571431c80ab",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/courses/lib/studio-media.ts",
+      "sha256": "3f3e84d5073e8188042fccca0cffe3db3d48d162e0ca94945895f54b138ed515",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/decorate.ts",
+      "sha256": "dfa7e5a1f333ba5cc7cd289fed615c52fa21d8aaa5a9f2512e79ac8cebdd2db4",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/home-clock.ts",
+      "sha256": "15aa7cd0d9a1ee009489e2e43a43d09f92af18efbb9736bb4a13d42dd298b85f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/home-float-cards.ts",
+      "sha256": "c664cd11f716094d805ace441244202f619bdf2480877edca2f7cc4ae8d0af2e",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/home-logo.ts",
+      "sha256": "e43930cec205c2c2459f6216b59e36d6a1741068857ff8e6eb57cf3a44f32750",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/home-widget-layout.ts",
+      "sha256": "1a5c2e330fcfd9d1ee6bc01176d1a2411e0e01eee34f9baa2fba9b6aaa7ac818",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/product-appearance.ts",
+      "sha256": "1931f2b4cf561a7c1cae8bc62ab53b4a98cda1c024abc7d161c8950a74f4865f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/reading-colors.ts",
+      "sha256": "06d7e03a195bc74d5f9ddefb0a27901bd887d40af1585c8b5554cab49919e83c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/site-theme-backgrounds-extra.ts",
+      "sha256": "60edb189fa6e297ee7f6347e1a85504ea861be981dc686204e691a14a15e201b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/site-theme-islands.ts",
+      "sha256": "53388d4352366cde5de6bbbb49bb25e0fdfd0a050658d44b9198aecdae4e18be",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/site-theme-palettes.ts",
+      "sha256": "efb75d1a7ee4ae238d77051c783950edd0c639fb09e917fa70063dd6a817138f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/site-theme-qzone.ts",
+      "sha256": "0b772509a2c2faf566ba6c1257cadd25be887930462ee9e77123308350a9b22a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/site-theme.ts",
+      "sha256": "98e59872a69c88adf8ee0e644552a6d45ce79742ba676d46dbbe73d1b36d9fcc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/site-typography.ts",
+      "sha256": "43ec54743994e38493662072b2346b3ecb8fadfd4a2774b17b8b916e0450069c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/decorate/lib/theme-list.ts",
+      "sha256": "cd172f330117009885d756c56f798118a9929ba9585073959bf928b8e12a26c6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/forum/lib/forum-media.ts",
+      "sha256": "90faa1b948d9c52e24b4bb037ed6a21a2924f3253640a7395c17a41478210e00",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/forum/lib/forum-membership-plans.ts",
+      "sha256": "f5b81140bc673133ed99e94534f48bf2afce8c9d85e5b76e83c97df954fba1b9",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/forum/lib/forum-membership.ts",
+      "sha256": "4e819d707c1d9cf4cdca41becc41e663fed15a602fd00ee139f693e7a5a82237",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/forum/lib/forum-settings.ts",
+      "sha256": "c4cc6a6dbb236684a7abb51c10a032b31959a7408cb3f1f5d004b7bcf76d739f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/forum/lib/forum.ts",
+      "sha256": "98c11e34f194858ce111ca06c44c73d5d68b130edf68e7e77d4ff4e609b15831",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/mathcode/lib/mathcode-billing.ts",
+      "sha256": "dfcd5db0d21a911831bda68cf780d8c2583914c45eba98015ca1f8b8da22f5d9",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/mathcode/lib/mathcode-quota.ts",
+      "sha256": "62e23ceb97faab65faacbb3050004fbb0b5d9a0f0530e796a0f463ee985ca6e5",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/api/meetup/[id]/join/route.ts",
+      "sha256": "53942d45f3fbecf6b6a8ac53c03428ed087f0755e74b5538187e9b1f37466476",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/api/meetup/[id]/route.ts",
+      "sha256": "7d9ee19994d28a9cb62b6bf2c37272520610a594236952a5ab938b62ef0fd546",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/api/meetup/route.ts",
+      "sha256": "c3a31fac1cf0a4f20d8f8192e47feaa53ff938f061e70d147cfb4ae984a81998",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/api/studio/meetups/[id]/route.ts",
+      "sha256": "d52dc72e7c7b2364c5b341c4599b93c674d6a21232e43558f03f9d4107c2667d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/api/studio/meetups/route.ts",
+      "sha256": "6de5c50e1d5837b6343a3e0fa14e1d7cf877b9168f7070b205488bfde370abb7",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-actions.tsx",
+      "sha256": "119ff96b8d27c4fc78292b9db77cc794c67af9682e7a4e2e32163d798b50d473",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-card.tsx",
+      "sha256": "a8a936485fc49790db47682002f4b5d6621011db82242aa2c49500028950d4e3",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-content-editor.tsx",
+      "sha256": "ec15c82184427070bb7a33e7d03c985e5169bfbaff47cdab65a43984bd2b32d6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-create-form.tsx",
+      "sha256": "ad96c30698f923e93e82e793c8b5be8f97cf6b514413dfdfd1c1066886d5b15d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-datetime-picker.tsx",
+      "sha256": "13467c625ff25da2b726cdb649e1637e31de62e10b3352db12c201ebb94662e3",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-detail-view.tsx",
+      "sha256": "7dcb92b10a15da3512356b4345bca476020db5a1a03f23d0d721dc9b7ec3299c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-editor-form.tsx",
+      "sha256": "8eabbc42c0b1cb1568e1a678aad535c121b5f8091bdbf215cfd2c327d01c16d6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-place-map-picker.tsx",
+      "sha256": "bcd4f5b5b62a8a3be73d059192603a2d7e873f7ff38f098f7c1ce13db7992f9b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-plaza-toolbar.tsx",
+      "sha256": "8f85b79afbcca7ff0147b24979e78ea4baa2bb36cc1743c6875c2d24808b2a27",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/meetup-timezone-picker.tsx",
+      "sha256": "60664e00d798630ad6e6d1a78db6192f80a7de1197402b434f31ecb414ff314a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/studio-meetup-panel.tsx",
+      "sha256": "df501b9c2f920b5ad83c17deb3866bf075704510e549be506d9282ca3673bc7d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/components/studio-my-meetup-panel.tsx",
+      "sha256": "accbed12f694503804f294e03307e2222775983f65ddfcdccc7ae408128aadbf",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-content.ts",
+      "sha256": "d7e419c7ee905e5fc8f6ca5c38b7746537fd88ca62fecc70bd9a806cbb01d729",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-datetime-input.ts",
+      "sha256": "432d641e57124158f39b104bfc6f8d616572cd7118283ba7f63c71fa8564212e",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-delete-client.ts",
+      "sha256": "215a51080d19ad78c9d90d36e032a2c8c70e81796bb1bfa00eaa557f5cc0f4d6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-delete.ts",
+      "sha256": "c3ad8268ec0f6f3aa9ac9d036eae1c72adf0b4066f19d362280ff5611f13fad0",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-meta.ts",
+      "sha256": "a29a8a40c5366d3c07216f22373a627ee73ca41fbc0f3f0c812f8c6e14a45e27",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-payload.ts",
+      "sha256": "c2ebabadbb53ea473e079fc4e1d5c26518f3a37fe7500b6488aee6565b8d5a2a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-product.ts",
+      "sha256": "771d4ceffc3c37b02c8e69038a81f7e799c011b722278c4946546c2a5d9b3365",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-service-contact.ts",
+      "sha256": "7dc0bfe0a7ae532621cef0605afc98f6fbe569fe9988cede08d0b81647fe88af",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-timezone-types.ts",
+      "sha256": "fb4f5b8fcf28e4eccf91fbfc30277c65e56a36f83a66154c0a07819142f9d1a1",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-timezone.ts",
+      "sha256": "cf662d2703ebd368fc45949543eaff7587edb2eebc9d0c412249b135e0b2ea64",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup-tz-cities-data.ts",
+      "sha256": "bc9a61e2983b08ef0ac4cc831696f8dcc790dc999b91d6bb5062ac22c2e0f312",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/lib/meetup.ts",
+      "sha256": "f5ede2bd8bbe50179175b5574e4aaa86104baaee3024798ca7ddfb62324bdc8a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/package.json",
+      "sha256": "6d796beca8d799945d28abeddc308c2f177dc10a1a487d54677cf0b23d2b3fc8",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/meetup/[id]/edit/page.tsx",
+      "sha256": "a11388c9d99136d5211dd2f6d51ecb8045acbf184fe34922fd4495f37559c701",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/meetup/[id]/page.tsx",
+      "sha256": "7cd50f5b3084963345a799f2cf73e04782ef3bf077c63098ac35048e18ecb388",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/meetup/new/page.tsx",
+      "sha256": "ef8c17cb8acbaaac0224a8090b74f844aac4646e73f302799229d0f57f52cc69",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/meetup/page.tsx",
+      "sha256": "d5ceec9b178e03e68654be911ebe7f9eb00a21ee1f4d92bcb5bbaf38c0971c42",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/studio/meetup/[id]/edit/page.tsx",
+      "sha256": "4c079bb977e60bc0ef60ee49b951da1ae7dfc2124412e4c0d77d5d6a953ca371",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/studio/meetup/mine/page.tsx",
+      "sha256": "c3c92693f31425c332268933f21e882d565a4b731826d4c0fa7c9694ec9634e3",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/studio/meetup/new/page.tsx",
+      "sha256": "1f78fceab2aa904ad9f450f8a6fc8c9064d1eedd48779ebd56213bf93b57ba83",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/meetup/routes/studio/meetup/page.tsx",
+      "sha256": "2fa3e9020c0718616f4472bb548ca67037cfeab173c14d3be0339afc3ee2defe",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/account-clients.ts",
+      "sha256": "6254a454cf689b5da80fabd86ecf7a4c94c511d7d1c692911693486392ae4199",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/account-identity.ts",
+      "sha256": "4e1c5345841174b7fd76340b0d061eb7224f980473cb65da9b47190c6f949696",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/account-oidc-cookie-compat.test.ts",
+      "sha256": "8fb0f6df6fd217c5e54e4f85fe612b4d6faa133760bf9fd20699e2efbfa9c108",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "packages/shared/src/account-oidc-cookie.ts",
+      "sha256": "271e25b32a1ec043f7458576dd4d5daad7a723b41dbecb0ca94a66116209ed01",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "packages/shared/src/account-oidc-tx-jar.test.ts",
+      "sha256": "1ab2d4d6e222edcb70b9378279ffc1f5394e96b60b905d4763ce8b6874edae75",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "packages/shared/src/account-oidc.ts",
+      "sha256": "4dd5923450c99e5a055d133453ccfacb6463c1a4240de91be6f7967ba82b3f73",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/ai-catalog.ts",
+      "sha256": "a5110ac4b311f1ec409d2dc5b885d6b9ab8fdc0d053c654c95e7532ca58d7f4a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/alipay.ts",
+      "sha256": "3f155336a24d019c9168a5fbec26ccfc7c16d3cd9b69c81e155e27f8456a6e6b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/aliyun-vod.ts",
+      "sha256": "6392fdaa5beb2786ce8c070174877684deec2cc9b5287520cc7d37ccaf1c49fc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/amap-place.ts",
+      "sha256": "5005937399ff5aaebc38d0a65f8119e83be66cda58b8c423ae1588cd9ad5f2ab",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/auth-email.ts",
+      "sha256": "de48134493a4bd23688dff6fca82c6315edd96ac6a80fea35605ddcbe7fecb4f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/auth-handoff.test.ts",
+      "sha256": "b012442135410768779736fb29f6d4b2e3ecf03c4f5ca87d7f7fab741ff6ee94",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/auth-handoff.ts",
+      "sha256": "63186bf4323bf8cc7b980977fd98f14f9dfa9edfe55c2b459ac71ed9e8275e17",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/auth-session-cookie.ts",
+      "sha256": "553cdde5232326002c7de8e06e00c36e09e81fbc2bf47ba41a387ba21113fb4a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/auth.ts",
+      "sha256": "5c5bcc894f507f8169714eaeffdb963b970d9e2626e3aecc01723723ebdc8991",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/bg-music.ts",
+      "sha256": "fc92d518e9b0c2b114541045191a6296e8f9d6f1ab9b5a7f750667ba443e9a3a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/browser-oss-multipart.ts",
+      "sha256": "5d57334e353b78188a65e368ef91bec61c0bf4f7a0f9123c9d9f68436110f7ff",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/chat/constants.ts",
+      "sha256": "93698c57f9c22c379a11c836611ac6da92f9f12ea4a9fa2ef38d784b9281069b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/chat/direct-key.ts",
+      "sha256": "c74b1ee16626662bbd8c001fc58760f9c91a6f742276066e9ac70f8ff5daa10a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/chat/group-service.ts",
+      "sha256": "004559a592902d9942bae71facf86b449177d547b005fd114e5066b93b6c2401",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/chat/policy.ts",
+      "sha256": "fc380ad54f58ef4440918fae9dae80a9a7e18ac99763a80d74831fc68681ac36",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/chat/realtime-hub.ts",
+      "sha256": "922e07f37fdeb7bace514e3db7567fd0df3bddfc333ff49a8a952ac4667f8b50",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/chat/service.ts",
+      "sha256": "9cab2c8f923392e2ac6bda253d11062eb9efe1379971f779b8ea3498a9ac9c97",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/config-center.ts",
+      "sha256": "6c74cf3b4b9d1f4f96cd2e9faf14a7717ca12af085c05dc4f9624bb6980672f7",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/coupon-budget.ts",
+      "sha256": "a5367b356d738bebb5714e53bc5ae11ef433b95eebdfa225702849c0aaac6d07",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/coupon-instance.ts",
+      "sha256": "58761ad99c524cd297725cf48fb8290cf5794381b668a69942803ea87f9ba00c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/coupon-paths.ts",
+      "sha256": "74c578beb53c8338f9da5589691ed4a67c73acd26aa7ef991abcc2d950848171",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/coupon-share.ts",
+      "sha256": "56f09d173e162fbb7705d96e84964c277d67cee22685c66f33039af1df117be6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/coupon-token.ts",
+      "sha256": "aadc42bb76c710ee1f46fec73ca2c9561be24d0e1ae880d5394836a46261ee5c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/coupons.ts",
+      "sha256": "583b71d14e6bb383af06896ab42e636df56ab4b4e9711a2ca21519e3cd9a9685",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/cover-images.ts",
+      "sha256": "e42c1446975790ea123797d290128fdb9a7b25bee33ed017473c7596179fdb69",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/db.ts",
+      "sha256": "5724c272d3b449d2e089fb8b71cbf1d21c5c7db396075aa20fa9fadb05adf88e",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/decorate.ts",
+      "sha256": "524bea83e605c01b4afeb5151807b9174d021de9904e564689b37f9a7377abbc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/distribution.ts",
+      "sha256": "57f64bd982dbc7668eaa2156480cb3f40d896d63d8330f93870803533fb8de2a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/geo-china.ts",
+      "sha256": "2dfca0949656adc76a4a0946a0fcc7929cba7a56dc4f1871aa3c6ccee8da6d31",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/content-resolve.ts",
+      "sha256": "89415674c107c435a1306f713859cb9ca327498cb966ecf974c5192d406161fb",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/content-translate.ts",
+      "sha256": "21e59ed4ee6a7cfec2d528075a5a6045c8efa9fc5d9ebb95ce486170f10f4e91",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/get-request-locale.ts",
+      "sha256": "8eabe996abe1aab238daae4311c8757b594e4390849e708b3101b0b683958ac7",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/locales.ts",
+      "sha256": "a18386a014c7bcce9a0992010c05b948db08e99e768e77af49ba29881490ac4c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/localize-entities.ts",
+      "sha256": "fd840d3a87f9d49b1b785f06fedfa3dfecf35497832943556ebdfe0c1eb70842",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/messages.ts",
+      "sha256": "717d02c3fcbda3121c79acaac43555e16ce04939dba9a53dd1c6f375b7ed8f9d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/opencc.ts",
+      "sha256": "689c8d24318ec506db898a3fb42458ba964df205789ea33548586daed4b440c7",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/resolve-locale.ts",
+      "sha256": "f78b5da0f178f5b36b4496c203dedd03244beda313c976e826391957bfc914dc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/i18n/source-hash.ts",
+      "sha256": "d91a9e7c4b8226aa2fd204a08bc30d5781c6fbea8ce473f59d41f47eef89160e",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/invite.ts",
+      "sha256": "365f5a4f8d8c978eb536fabf7d2ada09c634567a2453a6b78e299fd217d24c02",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/media-library.ts",
+      "sha256": "639e909f548e8ada939faf355c89c341311e22838253adb8bddfdd1a0380ccc1",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/media.ts",
+      "sha256": "b3a3e0163fd0b5bf541f1c5bccc006260d96a01d919909c137734910fae34881",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/order-form.ts",
+      "sha256": "1baaecfd086bb8dc0b658f2466236c9d3782cbe33fdef535771f350bf87c58dd",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/order-payment-attempt.ts",
+      "sha256": "9666b53550e3ca3de8a3a396573a5b3be43a93484024e2c5cad00315f8350139",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/orders.ts",
+      "sha256": "bdebdfd9c035a25775e60b9227b6888ecb16de3bbf539d8c5a34d2f3d9d91e2c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/page-templates.ts",
+      "sha256": "592234896193ef2e78722f85f3e9d2862404a48fe7c32809874cdca1134b6963",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/password.ts",
+      "sha256": "2d4a8c43db71d4eb2c0df92607cc4b162e84a464f5f1d71fcebfae6eed0ca59c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/pay-center-account.test.ts",
+      "sha256": "84dd5affc80f7f1dc691c392f76d64d60537479e42831b5ab43ad7929ac30850",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/pay-center-account.ts",
+      "sha256": "d4e2ee05df49d46722040ef83ef82dad0081b2c2ddcf11d01ec49bc9550bf6f0",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/pay-center-entry.ts",
+      "sha256": "f001c2980be5653a67bf59f3d3eec15e59e72fad0482ee52d3116880543e8cde",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/payment-account-lock.test.ts",
+      "sha256": "a0cc43d3d1e16dacbe68955aee2c6bf9274c62f60fff36b9efa1ff6e2b3c1f00",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/payment-account-lock.ts",
+      "sha256": "4fe0cb067645978d9198eba34e7fd569d1c0daf2bc34c40ecea3fc6f5c1318d8",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/payment-notify.ts",
+      "sha256": "14d1b64c4000a5b9a649eca7628da645d2583ea95b30c56c979c0b76bab5ddcb",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/payments.ts",
+      "sha256": "3d8017f123c62be44f664388c90e0069d2b31d4571e0161baee90553f8d9ccbb",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/platform-settlement.ts",
+      "sha256": "2217d4c5d00f4692bbabc2c1ab35f087c2e6e015acfe4999374a2901c6ed2b8f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/portal.ts",
+      "sha256": "990535e25e7f7cf51244ea00c30dcd2c6b6dc8c909f7995364e9995ce104c6a8",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/poster-templates.ts",
+      "sha256": "cc4c144dfbdf42b58d385c031299ac536600b732b5634d9209f564cb2d9a66fc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/product-display-order.ts",
+      "sha256": "853e8722e1508a1b66fc4b09c6c93d3af547e7b5fdde35933edd8e5ce8bb2be5",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/product-price-display.ts",
+      "sha256": "5624db0275b0a443b2cf092f5debeebb43e0786cb56a950890f92ec98dab8715",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/product-types.ts",
+      "sha256": "74e84f4e9017d74956567a8a5669caa42fa171f69858a420a1cb07a4b86d48f1",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/request-origin.ts",
+      "sha256": "29e3db6c9d554143f051c611703d7924d44b3b8410fe78339cf744d60a4e4e75",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/roles.ts",
+      "sha256": "e634bca1c4db47604cb525805401ed2b651d8cb0897f27ca4955ad40b67cf394",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/safe-next-path.ts",
+      "sha256": "55140635adb8e3a50e601ab1e707623ba18b7a7f991d768b9f9ae50548d6248b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/security/headers.ts",
+      "sha256": "c8deaeaceadbd8921c00ffb51aaab1308b87a3e1652b990e9b8957c8fe2722a8",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/security/upload-policy.ts",
+      "sha256": "1b76999ada626f3c5146c6180a3facedd94015c62b21d2fdb75b03db96072ea5",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/shop.ts",
+      "sha256": "ac83a1e2131da0074cd684830be3b76fd218cb2b396e5ea9e64cf58ac16338ee",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/site-settings.ts",
+      "sha256": "c4dc5090195c50bd5e7e2459cd27a061fe0d8086b1bd4168d3fdff543698b08b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/site-typography.ts",
+      "sha256": "f9aa624fc14182dc2ba2b63d3ab19a826c7df3015a4d4c9d1a4b587cbcccee87",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/storage.ts",
+      "sha256": "412486245a6c96fae0301515f6ba907cd120547b8eaa6a5196a762c01c6f8f0e",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/studio-nav-config.ts",
+      "sha256": "78b55fd803e67e0a7ec0dccfe9bc60c4a09aabaf6076504118542667cfd002b7",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/studio.ts",
+      "sha256": "f5cf9a6891cf0bc3f34ed0c2a022e027aaa7e5155cd39dbebbbf9f677b5e7e4d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/tab-decision.test.ts",
+      "sha256": "f2e24c31a6cae9889b68de6d89b9e536ac879f9a9858eebbbabf30ed7f7c83c9",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/tab-decision.ts",
+      "sha256": "68cee74a462243ff7508b666a8b38187627957a716badefa9a4d08b3dcb04ed3",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/ui-copy.ts",
+      "sha256": "9bee8101e9460a68ef79d7f80956766f99467c9590eef799f5e5a45cab5ca9ab",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/utils.ts",
+      "sha256": "40d7a6553ce3b7edcc3b04ddb4ba23cc98240ebf60730d3c6ee403c7c9b414f0",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/wechat-env.ts",
+      "sha256": "f1cd40da745c7eb331f3f5c017dbe40dc9413c3f61108c51a5845383694f6f04",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/wechat-jsapi-client.ts",
+      "sha256": "b98f164780717ba82febf881f4a84ea37130c19d2ff215e49f5a7a9ffc52ad85",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/wechat-pay-trade.ts",
+      "sha256": "a1c49c648d46bc6e54ff46a1c116ca8b1b68e95f7e98419198f0dc7cc2d527f0",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/wechat-pay.ts",
+      "sha256": "8d73cc207d44d1568e10ca2025f05c5ff66cced17076cc03802d9ccb6b66aa08",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "packages/shared/src/www-tab-broker.ts",
+      "sha256": "c9aed2dd8742ea010d41202cf4d113935372a72b18063c63d6d73ee8a8d78832",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "sha256": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "prisma/schema.prisma",
+      "sha256": "855b630a5973e2320a56729df780a72d3e5bb0cfd4663d1ba369fc57a7710a21",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/auth/account/start/route.ts",
+      "sha256": "ac6cdb3ae57ee25a415d614827d98a7b3575982ee74541435ae590124ee29f91",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "src/app/api/auth/callback/route.ts",
+      "sha256": "58eb85054dcd89ad9523d0905da2693f4a8c0103bfa7dc1d69e2c8fe92c4ead4",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "src/app/api/auth/logout/route.ts",
+      "sha256": "b69791932592d0a1e92974bbb940fd7f1dfc7fe50cd7b727d8942ac9b72fa728",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/auth/session/route.ts",
+      "sha256": "41598b78ec965be562667dbe6fc0750c036de41af8b79fc7b2d6d99589a87e3f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/auth/tab/route.ts",
+      "sha256": "3d77e043a0eb61eef3b7ac0418677c25cec3a7c82e337b971c724dae3687d8dd",
+      "sourceCommit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/accept/route.ts",
+      "sha256": "255968528b84645cd6439d595e29f8ea2a8b8dae7a34eb8239ff5964c04a4b29",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/announcement/route.ts",
+      "sha256": "af135a99e5d8282a0f23c5ca12a80fb5fef1fee3a9209f3b45f83f1cf0732697",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/invite/route.ts",
+      "sha256": "ba46430ba069906c7bf2410f30c509e0e339be5c539ef22d467c55cad3e8ddd8",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/join/route.ts",
+      "sha256": "a4da2730c2a468c89efc860422b73b81e3ed8400be441aa2c0463e69f3b5a17b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/messages/[messageId]/recall/route.ts",
+      "sha256": "627619ad2b353dc711e169866a67b947cc8c2f6a2c3ffb0ff3a911756d1834d4",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/messages/[messageId]/route.ts",
+      "sha256": "5a77ac39167b16701faaf8638c2909312cc43eeb7a1d1f71d479fd46ca8d10a9",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/messages/route.ts",
+      "sha256": "0983119e33fb98cc71c4eb87ac42112be51744fa53fc3895073046472c2461d6",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/reject/route.ts",
+      "sha256": "8a7038f9ed7b3f12d049c173ba8955c8ff386ba562a6be34fc107d77f33d522d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/[id]/route.ts",
+      "sha256": "0d99bd1831cba7710bb48a59b2c19bbacc1b071256521376c51a90ca88b3bf78",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/chat/conversations/route.ts",
+      "sha256": "d9127cabc500c7250c3506f27a3362c0a46aed9fa4e4327a4dfa8f7e9ae58675",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/coupons/available/route.ts",
+      "sha256": "dbb55466ddd14b58598b032774aad85c5638c3eb4b6e1f7264219afccb5f99ee",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/geo/city-tz/route.ts",
+      "sha256": "7791f63a7a7c11f3f0e98c7f8ed6dd9325604e22395a85a0e87d5baa3a104d3f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/geo/reverse/route.ts",
+      "sha256": "5e69ae0dec98832ebc8282e6c86cde0e3bba5db0fa95347ceaa29a55d7e440f3",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/geo/search/route.ts",
+      "sha256": "9012323e698aa058d1b7cf0145862391d03e7188faf7fc64deb9157b58e340ac",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/geo/tile/[z]/[x]/[y]/route.ts",
+      "sha256": "e570edeb2e21b9dc4b967810dd8d8dad94d432afe46148e6964bee044460b207",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/geo/timezone/route.ts",
+      "sha256": "3b250106f06fbc703f91a333b3bca94b2fbc3334ac4aea358c75adb997cc188a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/meetup/[id]/join/route.ts",
+      "sha256": "a0a33a3f1011460786ea56ee24d56b104bc412cf7b044a61e56f0d586d1307e9",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/meetup/[id]/route.ts",
+      "sha256": "1d5ea6a57295e8a3846a5a76754117ed5dc867ddb4fae9cc57f7c713bca8c730",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/meetup/route.ts",
+      "sha256": "a48c171dca9eb02a77778a308ad560fde4f5f47121dcbbcdf7996323b3f77591",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/orders/[orderId]/pay/route.ts",
+      "sha256": "0cff6042bc6dd597c28957e655ccca6b0502fbbadd5181117956093727b54bd2",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/orders/[orderId]/route.ts",
+      "sha256": "e680db1ec077571ed7a20fb1a5f208df18db55086b9ac6aac8e0ebae1ce6b5b3",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/orders/route.ts",
+      "sha256": "188b44d3ccb37e67ca9196c34dc146acf9f7ce921cc58a44623545464805985f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/payments/alipay/notify/route.ts",
+      "sha256": "1310ebd7b86dc83c6108a37afc66ea4866691ea726e35d1b2c44ce79e9cf4ad8",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/payments/wechat/notify/route.ts",
+      "sha256": "e77c2b475b399830850186c4e8b5f075373f5274bd39973e9d0209e0153f3821",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media-categories/[id]/route.ts",
+      "sha256": "5ff812420a1d755bf55cb86c64dd97e10d1abca5ea6fffaa48e6c9ce241c8a28",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media-categories/route.ts",
+      "sha256": "8f026b48a76a49f8516a201d65f6823e4fd763c7f5f2c74b78cf3645e6d820cb",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media/[id]/play/route.ts",
+      "sha256": "3be4a6f34ca02db1c9509065b380d63e2082a424fc98539b67ecd0f0ac7aa7fb",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media/[id]/route.ts",
+      "sha256": "d8f0abdf387d607e106303fd23592ef1d65466bad5d5fdf8db0b3e554ee8d241",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media/complete/route.ts",
+      "sha256": "299a85e36faf6aed412ea2e7b74c60a70cfe3f632be22965cf3e8e23be303c0a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media/prepare/route.ts",
+      "sha256": "76e7d4a2206580cc103e88f490542a55f57aa537c47d104b55aa3ebcbb1d7a68",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/media/route.ts",
+      "sha256": "5c3324ff3a4432cbaa18995de9c1d61d9143cf5dbb29d44a8da5e30537b5e556",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/meetups/[id]/route.ts",
+      "sha256": "acaccd42065416b36b317a76d810c73f932a199723d6aca35fe86d07b9593493",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/studio/meetups/route.ts",
+      "sha256": "74f8bc38d2f36e7cb45d5aa7337d4c8ff4af7cf64e8bd1b461bc2e36d2eb6fbe",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/tab-bootstrap/route.ts",
+      "sha256": "ea3a28e170fd3db41b450da5bd88f1ef156341235f14822512df053b10844cf2",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/api/upload/image/route.ts",
+      "sha256": "9110d84aced6f11f80f7a1223136889fa4307db07d733dadea2c7063b73d05a0",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/checkout/[orderId]/page.tsx",
+      "sha256": "26d5703a2c22eb340bf487f8b5b4abf24906a43186578b3725f7496a01ad518d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/checkout/return/page.tsx",
+      "sha256": "69345cb963160cf5c0e26df3216b00e8fe8005ef5bd877b8beb5d445ac35c3cc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/globals.css",
+      "sha256": "ccda5a31097bfc1fe9546eaf7d5659d2c425d2cbb92599df28b773a956650274",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/meetup/[id]/edit/page.tsx",
+      "sha256": "f5f4179ec9197756f5deb6579343ecb71c68338fa2c462a6eadad95574958682",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/meetup/[id]/page.tsx",
+      "sha256": "ce945b58459f0091182b57374ac8cce77454f6321be96fb71faf01cf72841065",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/meetup/new/page.tsx",
+      "sha256": "e2f122de9c7ac95f72a00a706ea4b0fe224a909a83f5f571306f9691252fbb30",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/meetup/page.tsx",
+      "sha256": "77fcb7fe50b7379ca5a61d4a59718b8fdde43bbdfec7823476664cb3574fa72b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/studio/meetup/[id]/edit/page.tsx",
+      "sha256": "8015df0b5fa6be09bb815f7845270ed18a77b0ff8c01e0e8fc34ad294a739cbc",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/studio/meetup/mine/page.tsx",
+      "sha256": "a446844ddbe9002083d0ec7ff715b3e04668bd69625f0649ecc7447334e01894",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/studio/meetup/new/page.tsx",
+      "sha256": "66985b4022eaa73e28ef04219f959491aff5ab4d50e9c166f98eda13cee0cb40",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/app/studio/meetup/page.tsx",
+      "sha256": "b3f3db8cc82963faa45293e7c814b2a39fd7e8cff629205e76c0fcd0e548988e",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/chat/start-consult-chat-button.tsx",
+      "sha256": "6554bcfc5e91f5b667dcfcd258d98d0044124eb5eba6cce3acedfdd2e927bb9c",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/checkout-order-form.tsx",
+      "sha256": "ecfa26962e374b3def49060d5dfb617af011ef2c72744af0735a98c459294c0b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/checkout-pay.tsx",
+      "sha256": "c163a740ac4b7559d96a2ea2b114bbef5b2437e803ac92d841db9944d58ee40a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/cover-image-picker.tsx",
+      "sha256": "ee0a248417930def8ee0442b49101d32aa6e115ea88bd9bf6ea4710006a44b42",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/i18n/bilingual-hover.tsx",
+      "sha256": "3a67c49f5ac893d199af4cc2e38eba735d72b0404d24c24b0c5af71a3fb84f17",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/i18n/locale-provider.tsx",
+      "sha256": "62d910eeec850c3c69896b87b1867bec58b2c82bd35c58bf508bffe17154399f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/image-url-field.tsx",
+      "sha256": "f9da99b4e9d06d93ed26a0518fcd90e851c7db019ba5610df05aa4d05480eedd",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/invite-share-panel.tsx",
+      "sha256": "fa96bc8ca8f3af3c81f8de84f9930b7c9d0effb638dc2de2ed74eea86aac5efa",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/media-asset-picker-modal.tsx",
+      "sha256": "2ec4fb2f65c46ad3ac6cd354295e022d5444d4dc1428436e1a7037189b6a1403",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/media-library-browser.tsx",
+      "sha256": "fc7cea365233599941e2658e4d3017fcde9fae864158979979e83f89be75f26b",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/media-upload-client.ts",
+      "sha256": "e8e9ca4346d85e296160baec36a9d3f79964e5bc7b8d9c2264e3dc23b9498cb0",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/components/order-form-fields.tsx",
+      "sha256": "2d2d0162e7115b0af207ef37815826ab94c24b45a361ee93eb33045a0ee3da19",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/de.json",
+      "sha256": "7ff89c00d9637c80733edc08d5510657dc57c6e92b6a3244c0f724e974d6cf39",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/en.json",
+      "sha256": "4b84f6d7737b1fa9d6f3765771759fcf0a1e9764c0777f26df7377ebd7606e20",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/es.json",
+      "sha256": "bce5eb5b9603d8d8d6229061f51617cb08e74321d18eae109e2dffa0d5a39d7a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/fil.json",
+      "sha256": "9652fde3a8580022a2d696de1963b5d316e435d99409e75eb747a59071bc5b6a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/fr.json",
+      "sha256": "f7c6416bfac7a7cedc03be26400d5b05a2136f8bc8f11e99023becb74579e212",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/ja.json",
+      "sha256": "870d1fcb05e4b865ddff1924540cd6988ad16c0d1ad1e96cada2c3fae5c106ff",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/pt.json",
+      "sha256": "d9482c103f16acc82b14f92f1c0a6a1c4afedd66196d0c5bc381aa659ea51e2d",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/vi.json",
+      "sha256": "c078d45a54d4cda8a47ff6a337e76dfa2cb6c3b1d0bc0d503186b14732f7438a",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/zh-Hans.json",
+      "sha256": "393a11ff45fbcbb50971ba1782799c4346037d8c75e3f91a85a035aeab7d91a9",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    },
+    {
+      "path": "src/locales/zh-Hant.json",
+      "sha256": "ded651aa3818f50f3748f2be0c3cc081c51e67de36d04208aca3688c9e62973f",
+      "sourceCommit": "f505187112ff82341e4cf5233da071439cbedec3"
+    }
+  ],
+  "baseCommit": "3686fed59ecbc650157d096733db98954f418a06",
+  "authOverlay": {
+    "repository": "yydsxwh/Andyyyds",
+    "commit": "59eccc3a73f05f152b0e45af27c9c4a9b0b9d930",
+    "files": [
+      "packages/shared/src/account-oidc-cookie.ts",
+      "packages/shared/src/account-oidc-tx-jar.test.ts",
+      "packages/shared/src/account-oidc-cookie-compat.test.ts",
+      "packages/shared/src/www-tab-broker.ts",
+      "src/app/api/auth/account/start/route.ts",
+      "src/app/api/auth/callback/route.ts",
+      "src/app/api/auth/tab/route.ts"
+    ],
+    "note": "Only existing host routes and required shared modules/tests are synchronized; the main-site account-switch page is not introduced."
+  }
+}
