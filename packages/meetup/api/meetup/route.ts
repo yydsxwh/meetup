@@ -29,6 +29,8 @@ import {
   parseMeetupServicePhones,
   sumMeetupPartySize,
 } from "@andyyyds/meetup/lib/meetup-service-contact";
+import { meetupCacheControl, projectMeetup, type MeetupViewer } from "@andyyyds/meetup/lib/meetup-public-projection";
+import { canManageMeetups } from "@andyyyds/shared/roles";
 
 function serializeMeetup(row: {
   id: string;
@@ -82,88 +84,60 @@ function serializeMeetup(row: {
     user?: { id: string; name: string; avatarUrl: string };
   }[];
   _count?: { joins: number };
-}) {
-  // 余位按占用名额（partySize）计，不是按报名账号数
-  const joinCount = sumMeetupPartySize(row.joins);
-  const priceCents = Math.max(0, Math.floor(row.priceCents || 0));
-  const maxPeople = fromMeetupPeopleDb(row.maxPeople);
-  const slots = (row.slots || []).map((s) => {
-    const count = sumMeetupPartySize(
-      row.joins.filter((j) => j.slotId === s.id),
-    );
-    return {
-      id: s.id,
-      name: s.name,
-      maxPeople: fromMeetupPeopleDb(s.maxPeople),
-      sortOrder: s.sortOrder,
-      joinCount: count,
-    };
-  });
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description,
-    contentHtml: row.contentHtml || "",
-    priceCents,
-    category: row.category,
-    startsAt: row.startsAt.toISOString(),
-    endsAt: row.endsAt ? row.endsAt.toISOString() : null,
-    timezone: normalizeMeetupTimeZone(row.timezone),
-    place: row.place,
-    latitude: row.latitude ?? null,
-    longitude: row.longitude ?? null,
-    maxPeople,
-    coverUrl: row.coverUrl || "",
-    tags: parseJsonStringArray(row.tagsJson),
-    feeIncludes: row.feeIncludes || "",
-    refundPolicy: row.refundPolicy || "",
-    autoRefund: Boolean(row.autoRefund),
-    gallery: parseJsonStringArray(row.galleryJson),
-    contactUrl: row.contactUrl || "",
-    meetingPoint: row.meetingPoint || "",
-    destination: row.destination || "",
-    highlights: row.highlights || "",
-    adminPhone: row.adminPhone || "",
-    servicePhones: parseMeetupServicePhones(row.servicePhonesJson),
-    wechatService: row.wechatService || "",
-    itineraryHtml: row.itineraryHtml || "",
-    feeNoteHtml: row.feeNoteHtml || "",
-    notesHtml: row.notesHtml || "",
-    status: row.status,
-    hostId: row.hostId,
-    productCourseId: row.productCourseId || null,
-    slots,
-    host: {
-      id: row.host.id,
-      name: row.host.name,
-      avatarUrl: row.host.avatarUrl || "",
+}, viewer: MeetupViewer = { userId: null }) {
+  return projectMeetup(
+    {
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      contentHtml: row.contentHtml,
+      priceCents: row.priceCents,
+      category: row.category,
+      startsAt: row.startsAt,
+      endsAt: row.endsAt,
+      timezone: normalizeMeetupTimeZone(row.timezone),
+      place: row.place,
+      latitude: row.latitude,
+      longitude: row.longitude,
+      maxPeople: row.maxPeople,
+      coverUrl: row.coverUrl,
+      tags: parseJsonStringArray(row.tagsJson),
+      feeIncludes: row.feeIncludes,
+      refundPolicy: row.refundPolicy,
+      autoRefund: row.autoRefund,
+      gallery: parseJsonStringArray(row.galleryJson),
+      contactUrl: row.contactUrl,
+      meetingPoint: row.meetingPoint,
+      destination: row.destination,
+      highlights: row.highlights,
+      adminPhone: row.adminPhone,
+      servicePhones: parseMeetupServicePhones(row.servicePhonesJson),
+      wechatService: row.wechatService,
+      itineraryHtml: row.itineraryHtml,
+      feeNoteHtml: row.feeNoteHtml,
+      notesHtml: row.notesHtml,
+      status: row.status,
+      hostId: row.hostId,
+      productCourseId: row.productCourseId,
+      createdAt: row.createdAt,
+      host: row.host,
+      slots: row.slots,
+      joins: row.joins,
     },
-    joinCount,
-    spotsLeft: Math.max(maxPeople - joinCount, 0),
-    createdAt: row.createdAt.toISOString(),
-    joins: row.joins.map((j) => ({
-      id: j.id,
-      userId: j.userId,
-      slotId: j.slotId || null,
-      partySize: Math.max(1, Math.floor(Number(j.partySize) || 1)),
-      createdAt: j.createdAt.toISOString(),
-      user: j.user
-        ? {
-            id: j.user.id,
-            name: j.user.name,
-            avatarUrl: j.user.avatarUrl || "",
-          }
-        : undefined,
-    })),
-  };
+    viewer,
+  );
 }
 
 const meetupInclude = {
   host: { select: { id: true, name: true, avatarUrl: true } },
   slots: { orderBy: { sortOrder: "asc" as const } },
   joins: {
-    include: {
-      user: { select: { id: true, name: true, avatarUrl: true } },
+    select: {
+      userId: true,
+      slotId: true,
+      partySize: true,
+      createdAt: true,
+      user: { select: { name: true } },
     },
     orderBy: { createdAt: "asc" as const },
   },
@@ -171,6 +145,11 @@ const meetupInclude = {
 };
 
 export async function GET(req: Request) {
+  const session = await getSession();
+  const viewer: MeetupViewer = {
+    userId: session?.id ?? null,
+    isManager: session ? canManageMeetups(session.role) : false,
+  };
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category")?.trim() || "";
   // past=1：兼容旧客户端；时间窗已取消，与默认行为相同
@@ -201,7 +180,7 @@ export async function GET(req: Request) {
   );
 
   return NextResponse.json({
-    meetups: sorted.map(serializeMeetup),
+    meetups: sorted.map((row) => serializeMeetup(row, viewer)),
     sort,
     // 便于前端提示：距离排序是否拿到了用户坐标
     geo: {
@@ -212,6 +191,11 @@ export async function GET(req: Request) {
         Number.isFinite(userLng),
       lat: userLat,
       lng: userLng,
+    },
+  }, {
+    headers: {
+      "Cache-Control": meetupCacheControl({ hasSession: Boolean(session) }),
+      Vary: "Cookie",
     },
   });
 }
@@ -303,7 +287,15 @@ export async function POST(req: Request) {
       });
     });
 
-    return NextResponse.json({ meetup: serializeMeetup(meetup) }, { status: 201 });
+    return NextResponse.json(
+      {
+        meetup: serializeMeetup(meetup, {
+          userId: session.id,
+          isManager: canManageMeetups(session.role),
+        }),
+      },
+      { status: 201, headers: { "Cache-Control": "private, no-store" } },
+    );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "请完整填写约搭信息" }, { status: 400 });

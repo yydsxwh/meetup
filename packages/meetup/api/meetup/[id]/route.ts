@@ -29,6 +29,7 @@ import {
   sumMeetupPartySize,
 } from "@andyyyds/meetup/lib/meetup-service-contact";
 import { canManageMeetups } from "@andyyyds/shared/roles";
+import { meetupCacheControl, projectMeetup, type MeetupViewer } from "@andyyyds/meetup/lib/meetup-public-projection";
 
 const statusOnlySchema = z.object({
   status: z.string().trim(),
@@ -44,8 +45,12 @@ async function loadMeetup(id: string) {
         include: { _count: { select: { joins: true } } },
       },
       joins: {
-        include: {
-          user: { select: { id: true, name: true, avatarUrl: true } },
+        select: {
+          userId: true,
+          slotId: true,
+          partySize: true,
+          createdAt: true,
+          user: { select: { name: true } },
         },
         orderBy: { createdAt: "asc" as const },
       },
@@ -54,73 +59,51 @@ async function loadMeetup(id: string) {
   });
 }
 
-function serialize(row: NonNullable<Awaited<ReturnType<typeof loadMeetup>>>) {
-  const joinCount = sumMeetupPartySize(row.joins);
-  const priceCents = Math.max(0, Math.floor(row.priceCents || 0));
-  const maxPeople = fromMeetupPeopleDb(row.maxPeople);
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description,
-    contentHtml: row.contentHtml || "",
-    priceCents,
-    category: row.category,
-    startsAt: row.startsAt.toISOString(),
-    endsAt: row.endsAt ? row.endsAt.toISOString() : null,
-    timezone: row.timezone || "Asia/Shanghai", // 旧数据无字段时按北京时间
-    place: row.place,
-    latitude: row.latitude ?? null,
-    longitude: row.longitude ?? null,
-    maxPeople,
-    coverUrl: row.coverUrl || "",
-    tags: parseJsonStringArray(row.tagsJson),
-    feeIncludes: row.feeIncludes || "",
-    refundPolicy: row.refundPolicy || "",
-    autoRefund: Boolean(row.autoRefund),
-    gallery: parseJsonStringArray(row.galleryJson),
-    contactUrl: row.contactUrl || "",
-    meetingPoint: row.meetingPoint || "",
-    destination: row.destination || "",
-    highlights: row.highlights || "",
-    adminPhone: row.adminPhone || "",
-    servicePhones: parseMeetupServicePhones(row.servicePhonesJson),
-    wechatService: row.wechatService || "",
-    itineraryHtml: row.itineraryHtml || "",
-    feeNoteHtml: row.feeNoteHtml || "",
-    notesHtml: row.notesHtml || "",
-    status: row.status,
-    hostId: row.hostId,
-    productCourseId: row.productCourseId || null,
-    slots: row.slots.map((s) => ({
-      id: s.id,
-      name: s.name,
-      maxPeople: fromMeetupPeopleDb(s.maxPeople),
-      sortOrder: s.sortOrder,
-      joinCount: sumMeetupPartySize(
-        row.joins.filter((j) => j.slotId === s.id),
-      ),
-    })),
-    host: {
-      id: row.host.id,
-      name: row.host.name,
-      avatarUrl: row.host.avatarUrl || "",
+function serialize(
+  row: NonNullable<Awaited<ReturnType<typeof loadMeetup>>>,
+  viewer: MeetupViewer = { userId: null },
+) {
+  return projectMeetup(
+    {
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      contentHtml: row.contentHtml,
+      priceCents: row.priceCents,
+      category: row.category,
+      startsAt: row.startsAt,
+      endsAt: row.endsAt,
+      timezone: row.timezone || "Asia/Shanghai",
+      place: row.place,
+      latitude: row.latitude,
+      longitude: row.longitude,
+      maxPeople: row.maxPeople,
+      coverUrl: row.coverUrl,
+      tags: parseJsonStringArray(row.tagsJson),
+      feeIncludes: row.feeIncludes,
+      refundPolicy: row.refundPolicy,
+      autoRefund: row.autoRefund,
+      gallery: parseJsonStringArray(row.galleryJson),
+      contactUrl: row.contactUrl,
+      meetingPoint: row.meetingPoint,
+      destination: row.destination,
+      highlights: row.highlights,
+      adminPhone: row.adminPhone,
+      servicePhones: parseMeetupServicePhones(row.servicePhonesJson),
+      wechatService: row.wechatService,
+      itineraryHtml: row.itineraryHtml,
+      feeNoteHtml: row.feeNoteHtml,
+      notesHtml: row.notesHtml,
+      status: row.status,
+      hostId: row.hostId,
+      productCourseId: row.productCourseId,
+      createdAt: row.createdAt,
+      host: row.host,
+      slots: row.slots,
+      joins: row.joins,
     },
-    joinCount,
-    spotsLeft: Math.max(maxPeople - joinCount, 0),
-    createdAt: row.createdAt.toISOString(),
-    joins: row.joins.map((j) => ({
-      id: j.id,
-      userId: j.userId,
-      slotId: j.slotId || null,
-      partySize: Math.max(1, Math.floor(Number(j.partySize) || 1)),
-      createdAt: j.createdAt.toISOString(),
-      user: {
-        id: j.user.id,
-        name: j.user.name,
-        avatarUrl: j.user.avatarUrl || "",
-      },
-    })),
-  };
+    viewer,
+  );
 }
 
 export async function GET(
@@ -128,15 +111,24 @@ export async function GET(
   ctx: { params: Promise<{ id: string }> },
 ) {
   const { id } = await ctx.params;
-  let row = await loadMeetup(id);
+  const session = await getSession();
+  const row = await loadMeetup(id);
   if (!row) {
     return NextResponse.json({ error: "活动不存在" }, { status: 404 });
   }
-  if (!row.productCourseId) {
-    await ensureMeetupProductCourse(prisma, row);
-    row = (await loadMeetup(id))!;
-  }
-  return NextResponse.json({ meetup: serialize(row) });
+  const viewer: MeetupViewer = {
+    userId: session?.id ?? null,
+    isManager: session ? canManageMeetups(session.role) : false,
+  };
+  return NextResponse.json(
+    { meetup: serialize(row, viewer) },
+    {
+      headers: {
+        "Cache-Control": meetupCacheControl({ hasSession: Boolean(session) }),
+        Vary: "Cookie",
+      },
+    },
+  );
 }
 
 export async function PATCH(
@@ -201,7 +193,10 @@ export async function PATCH(
         await ensureMeetupProductCourse(tx, updated);
       });
       const row = await loadMeetup(id);
-      return NextResponse.json({ meetup: serialize(row!) });
+      return NextResponse.json(
+        { meetup: serialize(row!, { userId: session.id, isManager: canManageMeetups(session.role) }) },
+        { headers: { "Cache-Control": "private, no-store" } },
+      );
     }
 
     // 完整字段编辑（发起人改自己的 / 站长改任意）
@@ -307,7 +302,10 @@ export async function PATCH(
     });
 
     const row = await loadMeetup(id);
-    return NextResponse.json({ meetup: serialize(row!) });
+    return NextResponse.json(
+      { meetup: serialize(row!, { userId: session.id, isManager: canManageMeetups(session.role) }) },
+      { headers: { "Cache-Control": "private, no-store" } },
+    );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "参数无效" }, { status: 400 });
