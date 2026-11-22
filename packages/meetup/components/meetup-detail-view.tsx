@@ -28,7 +28,6 @@ import { meetupSlotSpecLabel } from "@andyyyds/meetup/lib/meetup-meta";
 import {
   buildMeetupConsultPhones,
   isWechatServiceLink,
-  maskMeetupDisplayName,
   sumMeetupPartySize,
   type MeetupServicePhone,
   type SiteContactFallback,
@@ -94,11 +93,18 @@ export type MeetupDetailData = {
   feeNoteHtml?: string;
   notesHtml?: string;
   status: string;
-  hostId: string;
-  productCourseId: string | null;
+  hostId?: string;
+  productCourseId?: string | null;
   slots: MeetupDetailSlot[];
-  host: { id: string; name: string; avatarUrl: string };
-  joins: MeetupDetailJoin[];
+  host: { id?: string; name: string; avatarUrl?: string };
+  joins?: MeetupDetailJoin[];
+  joinCount?: number;
+  spotsLeft?: number;
+  viewerJoined?: boolean;
+  viewerIsHost?: boolean;
+  participants?: Array<{ key: string; displayName: string; partySize: number }>;
+  adminPhone?: string;
+  contactUrl?: string;
 };
 
 type AvailableCoupon = {
@@ -208,18 +214,24 @@ export function MeetupDetailView({
     hideAllPrices,
     hidePrice: meetup.hidePrice,
   });
-  const isHost = Boolean(currentUserId && currentUserId === meetup.hostId);
+  const joins = meetup.joins || [];
+  const isHost = Boolean(
+    meetup.viewerIsHost || (currentUserId && meetup.hostId && currentUserId === meetup.hostId),
+  );
   const canManageStatus = isHost || canManageAsAdmin;
   const alreadyJoined = Boolean(
-    currentUserId && meetup.joins.some((j) => j.userId === currentUserId),
+    meetup.viewerJoined || (currentUserId && joins.some((j) => j.userId === currentUserId)),
   );
   const fields = activeOrderFormFields(orderForm);
 
   const joinedPeople = useMemo(
-    () => sumMeetupPartySize(meetup.joins),
-    [meetup.joins],
+    () => (typeof meetup.joinCount === "number" ? meetup.joinCount : sumMeetupPartySize(joins)),
+    [meetup.joinCount, joins],
   );
-  const spotsLeft = Math.max(meetup.maxPeople - joinedPeople, 0);
+  const spotsLeft =
+    typeof meetup.spotsLeft === "number"
+      ? meetup.spotsLeft
+      : Math.max(meetup.maxPeople - joinedPeople, 0);
 
   const displaySlots = useMemo(() => {
     if (meetup.slots.length > 0) return meetup.slots;
@@ -353,9 +365,7 @@ export function MeetupDetailView({
     (meetup.wechatService || "").trim() ||
     (siteContact?.wechat || "").trim();
 
-  const recentJoins = useMemo(() => {
-    return [...meetup.joins].reverse().slice(0, 12);
-  }, [meetup.joins]);
+  const roster = meetup.participants || [];
 
   const ctaLabel = (() => {
     if (alreadyJoined) return "已上车";
@@ -829,37 +839,21 @@ export function MeetupDetailView({
               更多 ›
             </button>
           </div>
-          {recentJoins.length === 0 ? (
-            <p className="text-xs text-[var(--muted)]">还没人上车，来当第一位</p>
-          ) : (
-            <div className="flex gap-3 overflow-x-auto pb-1">
-              {recentJoins.slice(0, 8).map((j) => {
-                const size = Math.max(1, Math.floor(j.partySize || 1));
-                return (
-                  <div
-                    key={j.id}
-                    className="flex w-14 shrink-0 flex-col items-center gap-1"
-                  >
-                    <div className="relative">
-                      <Avatar
-                        name={j.user.name}
-                        avatarUrl={j.user.avatarUrl}
-                        size={44}
-                      />
-                      {size > 1 ? (
-                        <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-medium text-white">
-                          {size}
-                        </span>
-                      ) : null}
-                    </div>
-                    <span className="w-full truncate text-center text-[10px] text-[var(--muted)]">
-                      {maskMeetupDisplayName(j.user.name)}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <p className="text-sm text-[var(--ink)]">
+            已报名 {joinedPeople} 人，还剩 {spotsLeft} 个名额
+          </p>
+          {roster.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {roster.slice(0, 12).map((person) => (
+                <li key={person.key} className="text-sm">
+                  {person.displayName}
+                  {person.partySize > 1 ? ` · ${person.partySize} 人` : ""}
+                </li>
+              ))}
+            </ul>
+          ) : joinedPeople === 0 ? (
+            <p className="mt-2 text-xs text-[var(--muted)]">还没人上车，来当第一位</p>
+          ) : null}
         </section>
 
         {/* 内容 Tab */}
@@ -1081,10 +1075,11 @@ export function MeetupDetailView({
                 打开联系/群聊链接 →
               </a>
             ) : null}
-            {currentUserId !== meetup.hostId ? (
+            {currentUserId && !isHost ? (
               <div className="mt-4 border-t border-[var(--line)] pt-3">
                 <StartConsultChatButton
-                  peerUserId={meetup.hostId}
+                  peerUserId=""
+                  peerLookupPath={`/api/meetup/${meetup.id}/consult`}
                   source={CHAT_SOURCE.MEETUP_CONSULT}
                   relatedMeetupId={meetup.id}
                 >
@@ -1120,25 +1115,15 @@ export function MeetupDetailView({
               </button>
             </div>
             <ul className="space-y-3">
-              {[...meetup.joins].reverse().map((j) => (
-                <li key={j.id} className="flex items-center gap-3">
-                  <Avatar
-                    name={j.user.name}
-                    avatarUrl={j.user.avatarUrl}
-                    size={40}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium">
-                      {maskMeetupDisplayName(j.user.name)}
-                    </div>
-                    <div className="text-xs text-[var(--muted)]">
-                      {(j.partySize || 1) > 1
-                        ? `${j.partySize} 人`
-                        : "1 人"}
-                    </div>
-                  </div>
+              {roster.map((person) => (
+                <li key={person.key} className="text-sm">
+                  {person.displayName}
+                  {person.partySize > 1 ? ` · ${person.partySize} 人` : ""}
                 </li>
               ))}
+              {roster.length === 0 ? (
+                <li className="text-sm text-[var(--muted)]">已报名 {joinedPeople} 人</li>
+              ) : null}
             </ul>
           </div>
         </div>

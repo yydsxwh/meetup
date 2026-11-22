@@ -5,13 +5,11 @@ import {
 } from "@andyyyds/meetup/components/meetup-detail-view";
 import { getSession } from "@andyyyds/shared/auth";
 import { prisma } from "@andyyyds/shared/db";
-import { fromMeetupPeopleDb } from "@andyyyds/meetup/lib/meetup";
 import { parseJsonStringArray } from "@andyyyds/meetup/lib/meetup-meta";
-import { ensureMeetupProductCourse } from "@andyyyds/meetup/lib/meetup-product";
 import {
   parseMeetupServicePhones,
-  sumMeetupPartySize,
 } from "@andyyyds/meetup/lib/meetup-service-contact";
+import { projectMeetup } from "@andyyyds/meetup/lib/meetup-public-projection";
 import { canManageMeetups } from "@andyyyds/shared/roles";
 import { resolveContentFields } from "@andyyyds/shared/i18n/content-resolve";
 import { getRequestLocaleContext } from "@andyyyds/shared/i18n/get-request-locale";
@@ -52,8 +50,12 @@ export default async function MeetupDetailPage({
       host: { select: { id: true, name: true, avatarUrl: true } },
       slots: { orderBy: { sortOrder: "asc" } },
       joins: {
-        include: {
-          user: { select: { id: true, name: true, avatarUrl: true } },
+        select: {
+          userId: true,
+          slotId: true,
+          partySize: true,
+          createdAt: true,
+          user: { select: { name: true } },
         },
         orderBy: { createdAt: "asc" },
       },
@@ -61,23 +63,6 @@ export default async function MeetupDetailPage({
   });
 
   if (!meetup) notFound();
-
-  if (!meetup.productCourseId) {
-    await ensureMeetupProductCourse(prisma, meetup);
-    meetup = (await prisma.meetup.findUnique({
-      where: { id },
-      include: {
-        host: { select: { id: true, name: true, avatarUrl: true } },
-        slots: { orderBy: { sortOrder: "asc" } },
-        joins: {
-          include: {
-            user: { select: { id: true, name: true, avatarUrl: true } },
-          },
-          orderBy: { createdAt: "asc" },
-        },
-      },
-    }))!;
-  }
 
   const inviteCode = session
     ? (
@@ -130,65 +115,72 @@ export default async function MeetupDetailPage({
     return undefined;
   };
 
-  const data: MeetupDetailData = {
-    id: meetup.id,
+  const projected = projectMeetup(
+    {
+      id: meetup.id,
+      title: meetup.title,
+      description: meetup.description,
+      contentHtml: meetup.contentHtml,
+      priceCents: meetup.priceCents,
+      category: meetup.category,
+      startsAt: meetup.startsAt,
+      endsAt: meetup.endsAt,
+      timezone: meetup.timezone,
+      place: meetup.place,
+      latitude: meetup.latitude,
+      longitude: meetup.longitude,
+      maxPeople: meetup.maxPeople,
+      coverUrl: meetup.coverUrl,
+      tags: parseJsonStringArray(meetup.tagsJson),
+      feeIncludes: meetup.feeIncludes,
+      refundPolicy: meetup.refundPolicy,
+      autoRefund: meetup.autoRefund,
+      gallery: parseJsonStringArray(meetup.galleryJson),
+      contactUrl: meetup.contactUrl,
+      meetingPoint: meetup.meetingPoint,
+      destination: meetup.destination,
+      highlights: meetup.highlights,
+      adminPhone: meetup.adminPhone,
+      servicePhones: parseMeetupServicePhones(meetup.servicePhonesJson),
+      wechatService: meetup.wechatService,
+      itineraryHtml: meetup.itineraryHtml,
+      feeNoteHtml: meetup.feeNoteHtml,
+      notesHtml: meetup.notesHtml,
+      status: meetup.status,
+      hostId: meetup.hostId,
+      productCourseId: meetup.productCourseId,
+      createdAt: meetup.createdAt,
+      host: meetup.host,
+      slots: meetup.slots,
+      joins: meetup.joins,
+    },
+    {
+      userId: session?.id ?? null,
+      isManager: session ? canManageMeetups(session.role) : false,
+    },
+  );
+  const data = {
+    ...projected,
     title: withBi("title"),
     titleSecondary: secondary("title"),
     description: withBi("description"),
     contentHtml: withBi("contentHtml") || "",
-    priceCents: meetup.priceCents,
-    hidePrice: Boolean(productCourse?.hidePrice),
-    category: meetup.category,
-    startsAt: meetup.startsAt.toISOString(),
-    endsAt: meetup.endsAt ? meetup.endsAt.toISOString() : null,
-    timezone: meetup.timezone || "Asia/Shanghai",
     place: withBi("place"),
     placeSecondary: secondary("place"),
-    maxPeople: fromMeetupPeopleDb(meetup.maxPeople),
-    coverUrl: meetup.coverUrl || "",
-    tags: parseJsonStringArray(meetup.tagsJson),
     feeIncludes: withBi("feeIncludes") || "",
     refundPolicy: withBi("refundPolicy") || "",
-    autoRefund: Boolean(meetup.autoRefund),
-    gallery: parseJsonStringArray(meetup.galleryJson),
-    contactUrl: meetup.contactUrl || "",
-    meetingPoint: withBi("meetingPoint") || "",
-    destination: withBi("destination") || "",
-    highlights: withBi("highlights") || "",
-    adminPhone: meetup.adminPhone || "",
-    servicePhones: parseMeetupServicePhones(meetup.servicePhonesJson),
-    wechatService: meetup.wechatService || "",
-    itineraryHtml: meetup.itineraryHtml || "",
-    feeNoteHtml: meetup.feeNoteHtml || "",
-    notesHtml: meetup.notesHtml || "",
-    status: meetup.status,
-    hostId: meetup.hostId,
-    productCourseId: meetup.productCourseId || null,
-    slots: meetup.slots.map((s) => ({
-      id: s.id,
-      name: s.name,
-      maxPeople: fromMeetupPeopleDb(s.maxPeople),
-      joinCount: sumMeetupPartySize(
-        meetup.joins.filter((j) => j.slotId === s.id),
-      ),
-    })),
+    meetingPoint: projected.meetingPoint ? withBi("meetingPoint") || "" : "",
+    destination: projected.destination ? withBi("destination") || "" : "",
+    highlights: projected.highlights ? withBi("highlights") || "" : "",
+    hidePrice: Boolean(productCourse?.hidePrice),
+    joins: [],
+    hostId: typeof projected.hostId === "string" ? projected.hostId : "",
     host: {
-      id: meetup.host.id,
-      name: meetup.host.name,
-      avatarUrl: meetup.host.avatarUrl || "",
+      id: typeof projected.hostId === "string" ? projected.hostId : "",
+      name: (projected.host as { name: string }).name,
+      avatarUrl: (projected.host as { avatarUrl?: string }).avatarUrl || "",
     },
-    joins: meetup.joins.map((j) => ({
-      id: j.id,
-      userId: j.userId,
-      slotId: j.slotId || null,
-      partySize: Math.max(1, Math.floor(Number(j.partySize) || 1)),
-      user: {
-        id: j.user.id,
-        name: j.user.name,
-        avatarUrl: j.user.avatarUrl || "",
-      },
-    })),
-  };
+  } as MeetupDetailData;
 
   return (
     <MeetupDetailView

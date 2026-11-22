@@ -11,7 +11,7 @@
     "build": "prisma generate && next build --webpack",
     "start": "next start --hostname 127.0.0.1 --port 4215",
     "typecheck": "tsc --noEmit",
-    "test": "node --test test/host.test.mjs && node --import tsx --test test/tab-bootstrap.test.ts && npm run test:shared",
+    "test": "node --test test/host.test.mjs && node --import tsx --test test/tab-bootstrap.test.ts && npm run test:shared && node --import tsx --test packages/meetup/lib/meetup-public-projection.test.ts",
     "postinstall": "prisma generate",
     "test:host": "node --test test/host.test.mjs",
     "test:shared": "node --import tsx --test packages/shared/src/tab-decision.test.ts packages/shared/src/auth-handoff.test.ts packages/shared/src/pay-center-account.test.ts packages/shared/src/payment-account-lock.test.ts packages/shared/src/account-oidc-tx-jar.test.ts packages/shared/src/account-oidc-cookie-compat.test.ts",

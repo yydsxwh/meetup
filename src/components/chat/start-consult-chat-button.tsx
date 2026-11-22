@@ -7,6 +7,8 @@ import type { ChatSource } from "@andyyyds/shared/chat/constants";
 
 type Props = {
   peerUserId: string;
+  /** 由服务端解析对方身份，页面上不放用户 ID */
+  peerLookupPath?: string;
   source: ChatSource;
   relatedCourseId?: string;
   relatedMeetupId?: string;
@@ -21,6 +23,7 @@ type Props = {
  */
 export function StartConsultChatButton({
   peerUserId,
+  peerLookupPath,
   source,
   relatedCourseId,
   relatedMeetupId,
@@ -37,15 +40,19 @@ export function StartConsultChatButton({
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/chat/conversations", {
+      const res = await fetch(peerLookupPath || "/api/chat/conversations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          peerUserId,
-          source,
-          relatedCourseId,
-          relatedMeetupId,
-        }),
+        body: JSON.stringify(
+          peerLookupPath
+            ? { source, relatedCourseId, relatedMeetupId }
+            : {
+                peerUserId,
+                source,
+                relatedCourseId,
+                relatedMeetupId,
+              },
+        ),
       });
       const data = (await res.json()) as {
         conversationId?: string;
@@ -78,7 +85,7 @@ export function StartConsultChatButton({
           className ||
           "btn btn-secondary inline-flex min-h-11 w-full items-center justify-center touch-manipulation"
         }
-        disabled={loading || !peerUserId}
+        disabled={loading || (!peerUserId && !peerLookupPath)}
         onClick={() => void onClick()}
       >
         {loading ? t("common.loading") : children || t("cta.consult")}

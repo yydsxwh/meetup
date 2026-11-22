@@ -15,6 +15,7 @@ import {
   parseOptionalCoord,
   sortMeetupPlazaRows,
 } from "@andyyyds/meetup/lib/meetup";
+import { sumMeetupPartySize } from "@andyyyds/meetup/lib/meetup-service-contact";
 import { canManageMeetups } from "@andyyyds/shared/roles";
 import { getHideAllPricesFlag } from "@andyyyds/shared/site-settings";
 
@@ -56,9 +57,9 @@ export default async function MeetupPlazaPage({
     prisma.meetup.findMany({
       where,
       include: {
-        host: { select: { id: true, name: true, avatarUrl: true } },
+        host: { select: { name: true } },
         productCourse: { select: { hidePrice: true } },
-        _count: { select: { joins: true } },
+        joins: { select: { partySize: true } },
       },
       orderBy:
         sort === "latest"
@@ -73,7 +74,7 @@ export default async function MeetupPlazaPage({
     rows.map((m) => ({
       ...m,
       maxPeople: fromMeetupPeopleDb(m.maxPeople),
-      joinCount: m._count.joins,
+      joinCount: sumMeetupPartySize(m.joins),
     })),
     { sort, userLat, userLng },
   );
@@ -155,7 +156,6 @@ export default async function MeetupPlazaPage({
                 status: m.status,
                 joinCount: m.joinCount,
                 host: { name: m.host.name },
-                hostId: m.hostId,
                 priceCents: m.priceCents,
                 hidePrice: Boolean(m.productCourse?.hidePrice),
               }}
